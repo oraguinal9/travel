@@ -7,7 +7,8 @@ import { RouteTool } from './tools/route';
 import { BudgetTool } from './tools/budget';
 import { PackingTool } from './tools/packing';
 import { repairJson, extractJsonObject } from './jsonRepair';
-import type { PlanRequest, TripPlan, TokenUsage } from '@/types/itinerary';
+import { suggestDayMeals } from './foodAgent';
+import type { PlanRequest, TripPlan, TokenUsage, Meal } from '@/types/itinerary';
 
 const SYSTEM_PROMPT = `你是一个擅长规划旅行的 AI 助手，帮助用户制定详细行程。
 你拥有多个工具：天气、POI 搜索、路线、预算、打包清单。根据用户的请求决定调用哪些工具，必要时链式调用。
@@ -158,9 +159,36 @@ export async function planTrip(
   const jsonStr = repairJson(extractJsonObject(text));
   const plan = JSON.parse(jsonStr) as TripPlan;
 
+  // 餐食增强：把每天午餐/晚餐替换为「当天所在位置附近」的真实高德餐厅；AI 模式再附点评
+  const fkw = foodKeyword(req.preferences || []);
+  let mealInput = 0;
+  let mealOutput = 0;
+  for (const d of plan.days) {
+    const a = d.attractions?.[0];
+    if (a?.location?.longitude && a?.location?.latitude) {
+      const w = plan.weather_info?.find((x) => x.date === d.date);
+      const weatherTip = w ? `${w.day_weather} ${w.day_temp}℃` : undefined;
+      onProgress?.('meals', `正在安排第 ${d.day_index + 1} 天附近的美食…`, 92);
+      const r = await suggestDayMeals({
+        center: { lng: a.location.longitude, lat: a.location.latitude, name: d.city || plan.city },
+        foodKeyword: fkw,
+        weatherTip,
+        aiMode: true,
+        onProgress,
+      });
+      if (r.meals.length) d.meals = r.meals;
+      if (r.usage) {
+        mealInput += r.usage.inputTokens;
+        mealOutput += r.usage.outputTokens;
+      }
+    }
+  }
+
   // 用量统计：优先用 LLM 回调（每轮一次），回退到消息 usage_metadata
   let inputTokens = usageAcc.input;
   let outputTokens = usageAcc.output;
+  inputTokens += mealInput; // 计入餐食点评的 token（AI 模式）
+  outputTokens += mealOutput;
   if (inputTokens === 0 && outputTokens === 0) {
     for (const m of messages) {
       const isAI = typeof m?._getType === 'function' ? m._getType() === 'ai' : m?.type === 'ai';
@@ -201,6 +229,20 @@ function poiKeywords(prefs: string[]): string[] {
   if (/夜景|网红|打卡/.test(joined)) set.add('热门景点');
   set.add('景点'); // 兜底，保证有景点可排
   return [...set];
+}
+
+// 将用户偏好映射为「餐食」高德周边搜索关键词（与景点关键词区分）
+function foodKeyword(prefs: string[]): string {
+  const j = prefs.join('，');
+  if (/火锅|串串/.test(j)) return '火锅';
+  if (/烧烤|撸串/.test(j)) return '烧烤';
+  if (/日料|寿司|料理/.test(j)) return '日料';
+  if (/咖啡|下午茶/.test(j)) return '咖啡';
+  if (/小吃|夜市|路边摊|宵夜/.test(j)) return '小吃';
+  if (/面食|面馆|粉/.test(j)) return '面馆';
+  if (/甜品|甜点|蛋糕/.test(j)) return '甜品';
+  if (/美食|吃|餐厅|川菜|湘菜|粤菜|本帮|江浙|鲁菜/.test(j)) return '特色餐厅';
+  return '美食';
 }
 
 // 高德路线：返回真实距离(km)与耗时(分钟)，失败返回 null（调用方回退估算）
@@ -277,7 +319,6 @@ export async function demoPlan(req: PlanRequest): Promise<TripPlan> {
       spots.push(p);
     }
   }
-  const foods = spots.filter((s) => s.category === '特色餐厅');
   const hotels = (await fetchPoi('酒店', 3)).filter((h: any) => h._coord);
 
   // 真实天气（Open-Meteo 免 Key）
@@ -306,8 +347,23 @@ export async function demoPlan(req: PlanRequest): Promise<TripPlan> {
       legMin += r ? r.min : 25;
     }
 
-    const lunch = foods.length ? foods[i % foods.length] : null;
-    const dinner = foods.length ? foods[(i + 1) % foods.length] : null;
+    // 餐食：用当天首个景点坐标做高德周边真实搜索（规则模式 0 token），返回附近真实餐厅
+    let meals: Meal[] = [
+      { type: 'lunch', name: '当地午餐', estimated_cost: 80 },
+      { type: 'dinner', name: '当地晚餐', estimated_cost: 120 },
+    ];
+    const centerSpot = daySpots[0];
+    if (centerSpot?._coord) {
+      const [clng, clat] = centerSpot._coord.split(',').map(Number);
+      if (clng && clat) {
+        const r = await suggestDayMeals({
+          center: { lng: clng, lat: clat, name: centerSpot.name || city },
+          foodKeyword: foodKeyword(req.preferences || []),
+          aiMode: false,
+        });
+        meals = r.meals;
+      }
+    }
     const hotel = hotels[0];
     const hotelCost = acc.includes('豪华') ? 800 : acc.includes('舒适') ? 450 : 300;
     dayPlans.push({
@@ -338,14 +394,7 @@ export async function demoPlan(req: PlanRequest): Promise<TripPlan> {
         image_url: sp.photo,
         ticket_price: sp.ticket || 0,
       })),
-      meals: [
-        lunch
-          ? { type: 'lunch' as const, name: lunch.name, address: lunch.address, estimated_cost: 80 }
-          : { type: 'lunch' as const, name: '当地午餐', estimated_cost: 80 },
-        dinner
-          ? { type: 'dinner' as const, name: dinner.name, address: dinner.address, estimated_cost: 120 }
-          : { type: 'dinner' as const, name: '当地晚餐', estimated_cost: 120 },
-      ],
+      meals,
     });
   }
 

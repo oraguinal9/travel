@@ -1,5 +1,6 @@
 import './globals.css';
 import type { ReactNode } from 'react';
+import Nav from '@/components/Nav';
 
 export const metadata = {
   title: '旅行规划 Agent',
@@ -9,7 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="zh">
-      <body>{children}</body>
+      <body>
+        <Nav />
+        {children}
+      </body>
     </html>
   );
 }

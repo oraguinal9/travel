@@ -27,6 +27,12 @@ export interface Meal {
   location?: Location;
   description?: string;
   estimated_cost?: number;
+  // 行程内餐食增强（来自高德周边真实 POI）
+  rating?: number; // 高德评分（0-5）
+  cost?: number; // 人均消费（元）
+  distance?: number; // 与当天所在位置距离（米）
+  reason?: string; // AI 模式：推荐理由
+  tags?: string[]; // AI 模式：标签
 }
 
 export interface Hotel {
@@ -105,5 +111,50 @@ export interface PlanRequest {
   total_budget?: number;
   city_tier?: 'tier1' | 'new_tier1' | 'other';
   // 规划模式：'ai' = 调用 DeepSeek 推理模型；'rule' = 免 DeepSeek，仅用高德 + Open-Meteo 规则拼装（0 token）
+  mode?: 'ai' | 'rule';
+}
+
+// ===== 周边探店 / 美食推荐 =====
+
+export interface FoodPOI {
+  id: string;
+  name: string;
+  category: string; // 高德分类（取第一个，如 餐饮服务;中餐厅 → 中餐厅）
+  address: string;
+  distance: number; // 与中心点距离（米）
+  rating?: number; // 高德评分（0-5）
+  cost?: number; // 人均消费（元）
+  location: Location;
+  photo?: string;
+  tel?: string;
+  reason?: string; // AI 模式：推荐理由
+  tags?: string[]; // AI 模式：标签
+}
+
+export interface FoodWeather {
+  day_weather: string;
+  day_temp: number;
+  night_temp: number;
+  tip: string; // 结合天气给的就餐建议
+}
+
+export interface FoodResult {
+  center_name: string;
+  center: Location;
+  keywords: string;
+  radius: number;
+  weather?: FoodWeather;
+  restaurants: FoodPOI[];
+  summary?: string; // AI 模式总体点评
+  generated_at: string;
+}
+
+export interface FoodRequest {
+  place?: string; // 文字位置（如 成都春熙路）；与经纬度二选一
+  longitude?: number; // 浏览器定位经度
+  latitude?: number; // 浏览器定位纬度
+  keywords?: string; // 想吃什么：火锅/咖啡/川菜…，空 = 美食
+  radius?: number; // 搜索半径（米），默认 2000
+  sort?: 'distance' | 'rating';
   mode?: 'ai' | 'rule';
 }
