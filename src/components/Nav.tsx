@@ -8,6 +8,7 @@ const tabs = [
   { href: '/cook', label: '家常菜谱' },
   { href: '/learn', label: '学习助手' },
   { href: '/name', label: '起名助手' },
+  { href: '/resume', label: '简历优化' },
 ];
 
 export default function Nav() {
