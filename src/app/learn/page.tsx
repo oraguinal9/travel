@@ -1,18 +1,68 @@
+import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 export const metadata = {
   title: '学习助手 · AI 生活助手',
-  description: '互动学习：苏科版八年级上册物理（含可动手实验与期末闯关）',
+  description: '互动学习：苏科版八年级上册物理 / 数学（含可动手实验与期末闯关，无需联网登录）',
 };
+
+const subjects = [
+  {
+    href: '/learn/physics',
+    emoji: '📘',
+    name: '物理 · 八年级上册',
+    desc: '苏科版：声现象 / 物态变化 / 光现象 / 光的折射 / 凸透镜成像 / 物体的运动。13 个可动手实验 + 期末闯关。',
+    tag: '6 章 · 13 实验',
+  },
+  {
+    href: '/learn/math',
+    emoji: '📗',
+    name: '数学 · 八年级上册',
+    desc: '苏科版：核心知识点互动讲解、易错点梳理、随堂例题与闯关练习，边做边巩固。',
+    tag: '互动练习 · 易错点',
+  },
+];
 
 export default function LearnPage(): ReactNode {
   return (
-    <div style={{ height: 'calc(100vh - 56px)' }}>
-      <iframe
-        src="/learn/physics/index.html"
-        title="学习助手"
-        style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-      />
+    <div style={{ maxWidth: 980, margin: '0 auto', padding: '28px 20px 48px' }}>
+      <h1 style={{ fontSize: 24, margin: '0 0 4px', color: '#1f2a44' }}>学习助手</h1>
+      <p style={{ color: '#6b7280', marginTop: 0, fontSize: 14 }}>
+        选自苏科版八年级上册 · 可动手互动学习（无需联网、无需登录）
+      </p>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: 16,
+          marginTop: 22,
+        }}
+      >
+        {subjects.map((s) => (
+          <Link key={s.href} href={s.href} style={{ textDecoration: 'none' }}>
+            <div
+              style={{
+                border: '1px solid #e2e8f0',
+                borderRadius: 16,
+                padding: 18,
+                background: '#fff',
+                height: '100%',
+                boxShadow: '0 1px 6px rgba(0,0,0,.04)',
+              }}
+            >
+              <div style={{ fontSize: 30 }}>{s.emoji}</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#1f2a44', marginTop: 8 }}>
+                {s.name}
+              </div>
+              <div style={{ fontSize: 12, color: '#2563eb', margin: '6px 0' }}>{s.tag}</div>
+              <p style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.6, margin: 0 }}>{s.desc}</p>
+              <div style={{ marginTop: 14, color: '#2563eb', fontWeight: 600, fontSize: 13 }}>
+                开始学习 →
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
