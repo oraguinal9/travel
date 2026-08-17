@@ -7,6 +7,7 @@ const tabs = [
   { href: '/', label: '行程规划' },
   { href: '/cook', label: '家常菜谱' },
   { href: '/learn', label: '学习助手' },
+  { href: '/tidy', label: '文件整理' },
 ];
 
 export default function Nav() {
