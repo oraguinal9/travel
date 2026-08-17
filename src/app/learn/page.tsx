@@ -8,6 +8,13 @@ export const metadata = {
 
 const subjects = [
   {
+    href: '/learn/kb',
+    emoji: '📚',
+    name: '初二全科知识库',
+    desc: '语文 / 数学 / 英语 / 物理 / 生物 / 地理 / 历史 / 道法 / 体育 全科核心知识 + 真题试卷 + 方法工具，自带搜索、错题本与掌握看板。',
+    tag: '全科 · 错题本',
+  },
+  {
     href: '/learn/physics',
     emoji: '📘',
     name: '物理 · 八年级上册',
