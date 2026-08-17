@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>八年级上册物理 · 互动学习（苏科版）</title>
+<style>
+  :root{
+    --bg:#f4f8ff; --card:#ffffff; --ink:#1f2a44; --muted:#6b7280;
+    --brand:#2563eb; --brand2:#0ea5e9; --warn:#f59e0b; --ok:#16a34a; --bad:#dc2626;
+    --line:#e2e8f0; --soft:#eef4ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7}
+  header{background:linear-gradient(120deg,var(--brand),var(--brand2));color:#fff;padding:18px 22px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+  header h1{margin:0;font-size:22px}
+  header p{margin:4px 0 0;opacity:.92;font-size:13px}
+  .layout{display:flex;align-items:flex-start;gap:0;min-height:calc(100vh - 70px)}
+  nav.side{width:200px;flex:none;background:var(--card);border-right:1px solid var(--line);padding:12px 8px;position:sticky;top:0;height:calc(100vh - 70px);overflow:auto}
+  nav.side button{display:block;width:100%;text-align:left;background:transparent;border:0;padding:11px 12px;margin:4px 0;border-radius:10px;font-size:14px;color:var(--ink);cursor:pointer;font-weight:600}
+  nav.side button:hover{background:var(--soft)}
+  nav.side button.active{background:var(--brand);color:#fff}
+  nav.side .tip{font-size:11px;color:var(--muted);padding:8px 12px;margin-top:8px}
+  main{flex:1;padding:18px 22px;max-width:1040px}
+  section.chapter{display:none;animation:fade .25s ease}
+  section.chapter.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-size:20px;margin:0 0 6px;color:var(--brand)}
+  h3{font-size:16px;margin:18px 0 8px;color:var(--ink);border-left:4px solid var(--brand2);padding-left:8px}
+  .know{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:10px 0}
+  .know ul{margin:6px 0;padding-left:20px}
+  .know li{margin:3px 0}
+  .tag{display:inline-block;background:var(--soft);color:var(--brand);border-radius:999px;padding:2px 10px;font-size:12px;margin:2px 4px 2px 0}
+  .demo{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:14px 0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .demo h4{margin:0 0 4px;font-size:15px;color:var(--brand)}
+  .demo .desc{font-size:13px;color:var(--muted);margin:0 0 10px}
+  canvas{width:100%;max-width:640px;height:auto;background:#fbfdff;border:1px solid var(--line);border-radius:10px;display:block;touch-action:none}
+  .ctrls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:8px 0}
+  .ctrls label{font-size:13px;font-weight:600}
+  .ctrls input[type=range]{width:160px;vertical-align:middle}
+  .btn{background:var(--brand);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-size:14px;cursor:pointer;font-weight:600}
+  .btn.alt{background:var(--warn)}
+  .btn.green{background:var(--ok)}
+  .val{font-variant-numeric:tabular-nums;color:var(--brand);font-weight:700}
+  .readout{font-size:13px;background:var(--soft);border-radius:10px;padding:8px 12px;margin-top:8px}
+  .readout b{color:var(--brand)}
+  .pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;margin:2px}
+  .pill.real{background:#dcfce7;color:#15803d}
+  .pill.virtual{background:#fee2e2;color:#b91c1c}
+  .pill.up{background:#dbeafe;color:#1d4ed8}
+  .pill.down{background:#fef3c7;color:#b45309}
+  .pill.big{background:#ede9fe;color:#6d28d9}
+  .pill.small{background:#cffafe;color:#0e7490}
+  table.tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+  table.tbl th,table.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:center}
+  table.tbl th{background:var(--soft);color:var(--brand)}
+  table.tbl td.l{text-align:left}
+  .foot{color:var(--muted);font-size:12px;margin-top:30px;text-align:center}
+  .quiz input{width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:15px}
+  .quiz .fb{margin-left:10px;font-weight:700}
+  .warnbox{background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid var(--warn);border-radius:12px;padding:12px 16px;margin:12px 0}
+  .warnbox b{color:#b45309}
+  .exbox{background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid var(--ok);border-radius:12px;padding:12px 16px;margin:12px 0}
+  .exbox .q{font-weight:700;color:#15803d;font-size:15px}
+  .exbox .a{font-size:13px;color:#475569;margin-top:4px}
+  .exbox details{margin-top:6px}
+  .exbox summary{cursor:pointer;color:var(--brand);font-size:13px}
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:14px 0}
+  .qcard .num{font-size:13px;color:var(--muted)}
+  .qcard .qt{font-size:16px;font-weight:700;margin:6px 0 12px}
+  .qcard .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{text-align:left;background:var(--soft);border:2px solid transparent;border-radius:12px;padding:10px 14px;font-size:15px;cursor:pointer;font-weight:600;color:var(--ink)}
+  .opt:hover{background:#e0ecff}
+  .opt.right{background:#dcfce7;border-color:#16a34a;color:#15803d}
+  .opt.wrong{background:#fee2e2;border-color:#dc2626;color:#b91c1c}
+  .qcard .why{font-size:13px;margin-top:10px;color:#475569}
+  .qcard .bar{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin:12px 0}
+  .qcard .bar > i{display:block;height:100%;background:var(--ok);width:0}
+  sub{font-size:.75em}
+</style>
+</head>
+<body>
+<header>
+  <h1>八年级上册物理 · 互动学习（完整版）</h1>
+  <p>苏科版 · 给小朋友的专属物理实验室（点左侧章节，边看边玩实验，每章有易错和例题，最后还有期末闯关）</p>
+</header>
+
+<div class="layout">
+  <nav class="side">
+    <button data-go="c1" class="active">🔊 第一章 声现象</button>
+    <button data-go="c2">🌡️ 第二章 物态变化</button>
+    <button data-go="c3">💡 第三章 光现象</button>
+    <button data-go="c4">🔎 第四章 光的折射</button>
+    <button data-go="c5">🔭 第四章 凸透镜成像</button>
+    <button data-go="c6">🏃 第五章 物体的运动</button>
+    <button data-go="c7">🏆 期末闯关</button>
+    <div class="tip">提示：每个实验都能动手拖一拖、点一点。做错没关系，多试几次就懂啦！</div>
+  </nav>
+
+  <main>
+    <!-- 第一章 声现象 -->
+    <section class="chapter show" id="c1">
+      <h2>第一章 · 声现象</h2>
+      <div class="know">
+        <span class="tag">振动发声</span><span class="tag">真空不能传声</span><span class="tag">音调=频率</span><span class="tag">响度=振幅</span><span class="tag">音色=材料</span>
+        <h3>一、声音是什么（振动发声）</h3>
+        <ul>
+          <li>声音由物体<b>振动</b>产生；一切发声的物体都在振动，<b>振动停止，发声也停止</b>。</li>
+          <li>正在发声的物体叫<b>声源</b>（固体、液体、气体都能发声：声带、昆虫翅膀、空气）。</li>
+          <li>探究方法——<b>转换法</b>：把看不见的振动"放大"显示，如音叉旁吊乒乓球被弹开、鼓面放米粒跳动、扬声器纸盆上的纸屑跳动。</li>
+        </ul>
+        <h3>二、声音的传播</h3>
+        <ul>
+          <li>声音靠<b>介质</b>传播，固体、液体、气体都能传声，<b>真空不能传声</b>。</li>
+          <li><b>真空罩实验</b>（理想实验法）：抽气时闹铃声音变小 → 推理出真空不能传声。</li>
+          <li><b>声速</b>：一般 v<sub>固</sub> &gt; v<sub>液</sub> &gt; v<sub>气</sub>；15℃空气约 <b>340 m/s</b>，温度越高声速越大。</li>
+          <li><b>回声</b>：遇障碍物反射回来；人耳区分回声与原声需间隔 &gt;0.1s（距离 &gt;17m）。测距 s = vt/2。</li>
+        </ul>
+        <h3>三、乐音三要素</h3>
+        <table class="tbl">
+          <tr><th>要素</th><th>决定因素</th><th>含义</th><th>波形特征</th></tr>
+          <tr><td>音调</td><td>频率（Hz，每秒振动次数）</td><td>高低（尖/粗）</td><td>波越密→音调越高</td></tr>
+          <tr><td>响度</td><td>振幅 + 距声源远近</td><td>大小（响/轻）</td><td>波越高→响度越大</td></tr>
+          <tr><td>音色</td><td>发声体材料、结构</td><td>辨别"是谁"</td><td>波形形状不同</td></tr>
+        </table>
+        <ul>
+          <li>人耳听觉范围 <b>20Hz ~ 20000Hz</b>。<b>超声波</b>（&gt;2万Hz）：B超、声呐、清洗、碎石；<b>次声波</b>（&lt;20Hz）：地震、海啸、台风会产生。</li>
+        </ul>
+        <h3>四、噪声及其控制</h3>
+        <ul>
+          <li>定义：物理学上指无规则振动发出的声音；环保上指妨碍休息/学习/工作的声音。</li>
+          <li>等级用<b>分贝(dB)</b>表示；0dB 是人刚能听到的最弱声，&gt;90dB 会损伤听力。</li>
+          <li>控制三途径：<b>声源处</b>（禁鸣喇叭）、<b>传播中</b>（隔音墙、植树、关门窗）、<b>人耳处</b>（戴耳塞）。</li>
+        </ul>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① 振动停止是"不再发声"，已发出的声音仍在传播（如回声）；
+        ② "响度大"≠"音调高"：大鼓很响但音调低，蚊子声小但音调高；
+        ③ 真空不能传声，但光能在真空传播；真空中声速为 0。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 发声的音叉接触水面溅起水花，说明 <b>声音由物体振动产生</b>。</div>
+        <div class="a">2. 山谷喊一声，0.6s 后听到回声，人与山距离 s = 340×0.6÷2 = <b>102 m</b>。</div>
+        <div class="a">3. 男低音放声唱、女高音轻声伴唱：<b>女高音音调高</b>，<b>男低音响度大</b>。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">回声题用 s=vt/2（声波往返）；音调看频率、响度看振幅，两者独立不混淆。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 1 · 声音三要素（能听能看）</h4>
+        <p class="desc">拖动「频率」改变音调高低，拖动「振幅」改变响度大小，点「播放」亲耳听一听，下面的波浪就是声音的样子。</p>
+        <canvas id="cvSound" width="640" height="200"></canvas>
+        <div class="ctrls">
+          <label>频率(音调) <span class="val" id="vFreq">440</span> Hz</label>
+          <input type="range" id="rFreq" min="120" max="1200" value="440" step="10">
+          <label>振幅(响度) <span class="val" id="vAmp">0.6</span></label>
+          <input type="range" id="rAmp" min="0.1" max="1" value="0.6" step="0.05">
+          <button class="btn" id="bPlay">▶ 播放</button>
+          <button class="btn alt" id="bStop">■ 停止</button>
+        </div>
+        <div class="readout">频率越高 → 音调越 <b>尖</b>；振幅越大 → 声音越 <b>响</b>。试试点 200Hz 和 1000Hz，差别很明显！</div>
+      </div>
+
+      <div class="demo">
+        <h4>实验 2 · 真空罩实验（真空不能传声）</h4>
+        <p class="desc">玻璃罩里有一只闹铃。点「抽气」，看声音一圈圈变小——推理出：没有空气（真空）就听不到声音。</p>
+        <canvas id="cvVac" width="640" height="240"></canvas>
+        <div class="ctrls">
+          <button class="btn" id="bVac">开始抽气</button>
+          <button class="btn alt" id="bVacR">放回空气（重置）</button>
+        </div>
+        <div class="readout" id="mVac">空气：<b>充足</b> ｜ 声音：<b>响亮</b>（推理：真空不能传声）</div>
+      </div>
+    </section>
+
+    <!-- 第二章 物态变化 -->
+    <section class="chapter" id="c2">
+      <h2>第二章 · 物态变化</h2>
+      <div class="know">
+        <span class="tag">温度 温度计</span><span class="tag">熔化吸热/凝固放热</span><span class="tag">晶体有熔点</span><span class="tag">汽化/液化</span><span class="tag">升华/凝华</span>
+        <h3>一、温度</h3>
+        <ul>
+          <li>温度：物体的<b>冷热程度</b>。</li>
+          <li>摄氏温度(℃)：0℃ = 冰水混合物温度，100℃ = 标准大气压下沸水温度，中间等分 100 份，1 份 = 1℃。</li>
+          <li>温度计原理：根据液体<b>热胀冷缩</b>（水银、酒精、煤油）。</li>
+          <li>使用：<b>选</b>（量程、分度值）→ <b>放</b>（玻璃泡全浸、不碰壁底）→ <b>读</b>（稳定后、视线与液柱上表面相平）→ <b>记</b>（数值+单位）。</li>
+          <li><b>体温计</b>：量程 35~42℃、分度值 0.1℃、有<b>缩口</b>可离开人体读数，用前需甩。</li>
+        </ul>
+        <h3>二、汽化与液化</h3>
+        <ul>
+          <li><b>汽化</b>（液→气）<b>吸热</b>：分 <b>蒸发</b>（任何温度、液体表面、缓慢）和 <b>沸腾</b>（一定温度、内部+表面同时、剧烈）。液体沸腾时的温度叫<b>沸点</b>（标准大气压下水 100℃）。</li>
+          <li>蒸发快慢受：液体温度↑、表面积↑、表面空气流动↑ 影响；蒸发有<b>致冷</b>作用（酒精擦身降温）。</li>
+          <li><b>液化</b>（气→液）<b>放热</b>：方法——①降低温度；②压缩体积（如液化气）。</li>
+        </ul>
+        <h3>三、熔化与凝固</h3>
+        <ul>
+          <li><b>熔化</b>（固→液）吸热；<b>凝固</b>（液→固）放热。</li>
+          <li><b>晶体</b>（有固定熔点）：冰、海波、金属、食盐、萘——熔化时<b>温度不变</b>（固液共存）。</li>
+          <li><b>非晶体</b>（无固定熔点）：蜡、松香、玻璃、沥青——熔化时温度持续上升。</li>
+          <li>同一晶体熔点 = 凝固点（冰 0℃、海波 48℃、萘 80.5℃）。</li>
+        </ul>
+        <h3>四、升华与凝华</h3>
+        <ul>
+          <li><b>升华</b>（固→气）吸热：樟脑丸变小、冰冻衣服变干、干冰致冷、碘升华。</li>
+          <li><b>凝华</b>（气→固）放热：霜、雪、冰花（窗内侧）、雾凇。</li>
+        </ul>
+        <h3>五、水循环与自然现象</h3>
+        <table class="tbl">
+          <tr><th>现象</th><th>成因（物态变化）</th><th>现象</th><th>成因</th></tr>
+          <tr><td>云</td><td>水蒸气液化或凝华</td><td>雨</td><td>云中水滴增大下落（液化）</td></tr>
+          <tr><td>露、雾</td><td>水蒸气遇冷液化成小水滴</td><td>霜、雪、冰花</td><td>水蒸气遇冷凝华成小冰晶</td></tr>
+          <tr><td>冰雹</td><td>云中水滴凝固</td><td>结冰</td><td>液态水凝固</td></tr>
+        </table>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① "白气"不是气体，是<b>小水滴</b>（液化），如冬天呼出的白气、冰棍冒白气；
+        ② 0℃ 的冰和 0℃ 的水温度相同，但冰熔化还需吸热；
+        ③ 晶体熔化时温度不变≠不吸热；非晶体没有熔点；
+        ④ 体温计用前需甩，其他温度计不能甩、读数时不能离开被测物体。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 物态变化填空：雾 <b>液化</b>、霜 <b>凝华</b>、冰冻衣服变干 <b>升华</b>、冰棍冒白气 <b>液化</b>。</div>
+        <div class="a">2. 海波熔化过程温度不变，说明它是 <b>晶体</b>。</div>
+        <div class="a">3. 标准大气压下水沸腾时温度 <b>不变</b>，继续加热温度仍 <b>保持沸点不变</b>。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">判断物态变化先看"初态→末态"：固→液熔化、液→固凝固、液→气汽化、气→液液化、固→气升华、气→固凝华。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 3 · 熔化曲线（晶体 vs 非晶体）</h4>
+        <p class="desc">点「开始加热」，看温度随时间怎么变。晶体到熔点会「停一下」边熔化边保温；非晶体则一直升温。</p>
+        <canvas id="cvMelt" width="640" height="240"></canvas>
+        <div class="ctrls">
+          <button class="btn" id="bMeltC">开始（晶体·冰）</button>
+          <button class="btn alt" id="bMeltN">开始（非晶体·蜡）</button>
+          <button class="btn" id="bMeltR">重置</button>
+        </div>
+        <div class="readout" id="mMelt">状态：<b>未开始</b> ｜ 温度：<b>25℃</b></div>
+      </div>
+
+      <div class="demo">
+        <h4>实验 4 · 水沸腾</h4>
+        <p class="desc">加热到 100℃ 后温度不再上升，水里冒出大量气泡——这就是沸腾。点「开始加热」。</p>
+        <canvas id="cvBoil" width="640" height="240"></canvas>
+        <div class="ctrls">
+          <button class="btn green" id="bBoil">开始加热</button>
+          <button class="btn" id="bBoilR">重置</button>
+        </div>
+        <div class="readout" id="mBoil">温度：<b>20℃</b></div>
+      </div>
+    </section>
+
+    <!-- 第三章 光现象 -->
+    <section class="chapter" id="c3">
+      <h2>第三章 · 光现象</h2>
+      <div class="know">
+        <span class="tag">光源</span><span class="tag">色散 三原色</span><span class="tag">直线传播</span><span class="tag">反射定律</span><span class="tag">平面镜等大等距</span>
+        <h3>一、光的色彩 颜色</h3>
+        <ul>
+          <li><b>光源</b>：自身能发光的物体（太阳、电灯、萤火虫、点燃的蜡烛）。月亮、镜子<b>不是</b>光源（反射光）。</li>
+          <li><b>色散</b>：牛顿用三棱镜把白光分解成红橙黄绿蓝靛紫七色光，说明白光是<b>复色光</b>。</li>
+          <li><b>光的三原色</b>：红、绿、蓝（混合可得各种色光，如红+绿=黄）。颜料三原色：红、黄、蓝。</li>
+          <li>物体颜色：透明物体颜色由<b>透过的色光</b>决定；不透明物体由它<b>反射的色光</b>决定（黑=吸收所有，白=反射所有）。</li>
+        </ul>
+        <h3>二、人眼看不见的光</h3>
+        <ul>
+          <li><b>红外线</b>：红光外侧，热效应强（夜视仪、遥控、诊断）。</li>
+          <li><b>紫外线</b>：紫光外侧，能使荧光物质发光（验钞、灭菌）；过量照射有害。</li>
+        </ul>
+        <h3>三、光的直线传播</h3>
+        <ul>
+          <li>条件：光在<b>同种均匀介质</b>中沿直线传播。</li>
+          <li>现象：影子、日食月食（地球/月球挡光）、<b>小孔成像</b>（倒立实像）、激光准直、射击瞄准、排队看齐。</li>
+          <li><b>光速</b>：真空中 c = <b>3×10⁸ m/s</b>（最大）；空气中近似；水中约 3/4c，玻璃中约 2/3c。<b>光年</b> = 光走一年的距离（长度单位，不是时间）。</li>
+        </ul>
+        <h3>四、平面镜成像</h3>
+        <ul>
+          <li>实验用<b>玻璃板</b>代替平面镜（便于确定像的位置），用<b>两支等大蜡烛</b>比较像与物大小。</li>
+          <li>特点：像与物<b>大小相等、到镜面距离相等、连线与镜面垂直、左右相反</b>，成<b>虚像</b>（光屏接不到，是反射光线反向延长线相交形成）。</li>
+          <li>应用：成像（梳妆镜）、改变光路（潜望镜）。</li>
+        </ul>
+        <h3>五、光的反射</h3>
+        <ul>
+          <li>反射定律：反射光线、入射光线、法线<b>三线共面</b>；分居法线两侧；<b>反射角 = 入射角</b>；光路<b>可逆</b>。</li>
+          <li><b>镜面反射</b>（平行光入射反射光仍平行，如镜面——迎着刺眼）与 <b>漫反射</b>（粗糙面，反射光射向四面八方，如白纸——各方向都看清）。<b>两者都遵循反射定律</b>。</li>
+        </ul>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① "光年"是<b>长度</b>单位，不是时间；② 月亮<b>不是</b>光源；
+        ③ 小孔成像是<b>倒立实像</b>，平面镜成<b>虚像</b>；④ 漫反射<b>也遵守</b>反射定律；
+        ⑤ 平面镜"左右相反"——你举右手，像举左手。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 光在 <b>同种均匀介质</b> 中沿直线传播；真空中光速 <b>3×10⁸ m/s</b>。</div>
+        <div class="a">2. 身高 1.6m 的人站镜前 2m，像离人 <b>4 m</b>，像高 <b>1.6 m</b>；人走近 1m，像大小 <b>不变</b>。</div>
+        <div class="a">3. 下列属漫反射的是 <b>C 白纸可从各角度看清</b>（A/B 是镜面反射）。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">平面镜成像"像距=物距"，像大小只与物大小有关，与距离无关；左右相反但上下不倒。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 5 · 光的反射（拖一拖入射光）</h4>
+        <p class="desc">拖动左边的小球改变入射方向，绿线是反射光。注意看：反射角始终等于入射角。</p>
+        <canvas id="cvReflect" width="640" height="260"></canvas>
+        <div class="readout" id="mReflect">入射角：<b>0°</b> ｜ 反射角：<b>0°</b></div>
+      </div>
+
+      <div class="demo">
+        <h4>实验 6 · 平面镜成像</h4>
+        <p class="desc">拖动左边的「物」（箭头），镜子右边的虚像会跟着对称移动——永远等大、等距。</p>
+        <canvas id="cvMirror" width="640" height="260"></canvas>
+        <div class="readout">像与物：<b>等大 · 等距 · 虚像（虚线）</b></div>
+      </div>
+
+      <div class="demo">
+        <h4>实验 7 · 小孔成像</h4>
+        <p class="desc">蜡烛的光穿过小孔，在屏上成<b>倒立</b>的像。拖动滑块改变物距和屏距，看像的大小怎么变。</p>
+        <canvas id="cvHole" width="640" height="240"></canvas>
+        <div class="ctrls">
+          <label>物距 <span class="val" id="vHoleO">3</span></label>
+          <input type="range" id="rHoleO" min="1" max="6" value="3" step="0.5">
+          <label>屏距 <span class="val" id="vHoleS">4</span></label>
+          <input type="range" id="rHoleS" min="1" max="6" value="4" step="0.5">
+        </div>
+        <div class="readout">像总是<b>倒立</b>的；屏离小孔越远，像越 <b>大</b>。</div>
+      </div>
+    </section>
+
+    <!-- 第四章 光的折射 -->
+    <section class="chapter" id="c4">
+      <h2>第四章 · 光的折射</h2>
+      <div class="know">
+        <span class="tag">折射偏向/偏离法线</span><span class="tag">池水变浅</span><span class="tag">透镜会聚/发散</span>
+        <h3>一、光的折射</h3>
+        <ul>
+          <li>定义：光从一种介质<b>斜射</b>入另一种介质时，传播方向发生<b>偏折</b>（垂直入射不偏折）。</li>
+          <li>规律：折射光线、入射光线、法线<b>共面</b>；分居法线两侧；光路可逆。</li>
+          <li>空气→水/玻璃（光疏→光密）：折射光线<b>靠近法线</b>，折射角 &lt; 入射角。</li>
+          <li>水/玻璃→空气（光密→光疏）：折射光线<b>远离法线</b>，折射角 &gt; 入射角（达 90° 发生全反射）。</li>
+        </ul>
+        <h3>二、折射现象</h3>
+        <ul>
+          <li>斜插水中的筷子"弯折"、游泳池底看起来变浅、海市蜃楼、星星"眨眼"（大气层密度不均）、从水下看岸上物体变高。</li>
+        </ul>
+        <h3>三、透镜</h3>
+        <ul>
+          <li><b>凸透镜</b>：中间厚、边缘薄 → 对光<b>会聚</b>（会聚透镜）。</li>
+          <li><b>凹透镜</b>：中间薄、边缘厚 → 对光<b>发散</b>。</li>
+          <li>名词：主光轴、光心 O（光过光心不偏折）、焦点 F、焦距 f（光心到焦点距离）。</li>
+        </ul>
+        <h3>四、三条特殊光线（必记）</h3>
+        <table class="tbl">
+          <tr><th>入射光线</th><th>经凸透镜后</th><th>经凹透镜后</th></tr>
+          <tr><td>平行于主光轴</td><td>过焦点 F</td><td>反向延长过虚焦点</td></tr>
+          <tr><td>过焦点 F</td><td>平行于主光轴</td><td>指向虚焦点→平行</td></tr>
+          <tr><td>过光心 O</td><td>方向不变</td><td>方向不变</td></tr>
+        </table>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① 折射角与入射角谁大，要看介质（空气→水，折射角&lt;入射角；水→空气反之）；
+        ② 凸透镜"会聚"≠一定成实像（u&lt;f 成虚像）；
+        ③ 虚像也能被看见、能拍照，只是光屏接不到。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 池水看起来变浅，是光的 <b>折射</b> 现象。</div>
+        <div class="a">2. 凸透镜对光起 <b>会聚</b> 作用，凹透镜起 <b>发散</b> 作用。</div>
+        <div class="a">3. 光从空气斜射入水中，折射角 <b>小于</b> 入射角。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">记口诀："密近疏远"——光从光疏介质到光密介质，折射光线靠近法线。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 8 · 筷子「弯折」(折射)</h4>
+        <p class="desc">一根直筷子斜插进水里，从侧面看水面处像断了一截、向上翘。这就是折射。</p>
+        <canvas id="cvRefract" width="640" height="260"></canvas>
+        <div class="readout">水中的一段光会<b>偏离原来的直线</b>，所以看起来折起来了。</div>
+      </div>
+
+      <div class="demo">
+        <h4>实验 9 · 池水变浅（折射）</h4>
+        <p class="desc">池底的石头，从岸上看位置比实际<b>更高（更浅）</b>。红虚线是"看到的位置"。</p>
+        <canvas id="cvPool" width="640" height="240"></canvas>
+        <div class="readout">因为光从水斜射入空气时偏离法线，人眼逆着光线看，觉得石头在更浅处。</div>
+      </div>
+    </section>
+
+    <!-- 第四章续 凸透镜成像 -->
+    <section class="chapter" id="c5">
+      <h2>第四章（续）· 凸透镜成像</h2>
+      <div class="know">
+        <span class="tag">u&gt;2f 缩小</span><span class="tag">f&lt;u&lt;2f 放大</span><span class="tag">u&lt;f 放大虚像</span><span class="tag">近视凹透镜</span><span class="tag">远视凸透镜</span>
+        <h3>一、凸透镜成像规律（核心）</h3>
+        <table class="tbl">
+          <tr><th>物距 u</th><th>像的性质</th><th>像距 v</th><th>应用</th></tr>
+          <tr><td>u &gt; 2f</td><td>倒立·缩小·实像</td><td>f &lt; v &lt; 2f</td><td>照相机</td></tr>
+          <tr><td>u = 2f</td><td>倒立·等大·实像</td><td>v = 2f</td><td>测焦距</td></tr>
+          <tr><td>f &lt; u &lt; 2f</td><td>倒立·放大·实像</td><td>v &gt; 2f</td><td>投影仪/幻灯机</td></tr>
+          <tr><td>u = f</td><td>不成像（平行光）</td><td>—</td><td>平行光源</td></tr>
+          <tr><td>u &lt; f</td><td>正立·放大·虚像</td><td>同侧</td><td>放大镜</td></tr>
+        </table>
+        <ul>
+          <li><b>口诀</b>：一倍焦距分虚实，二倍焦距分大小；物近像远像变大（实像），物远像近像变小（实像）。</li>
+        </ul>
+        <h3>二、透镜应用</h3>
+        <ul>
+          <li><b>照相机</b>：u&gt;2f，倒立缩小实像；拍近景要减小物距（镜头前伸）。</li>
+          <li><b>投影仪</b>：f&lt;u&lt;2f，倒立放大实像；胶片要倒放。</li>
+          <li><b>放大镜</b>：u&lt;f，正立放大虚像。</li>
+        </ul>
+        <h3>三、眼睛与视力矫正</h3>
+        <ul>
+          <li>眼睛：<b>晶状体 ≈ 凸透镜</b>，<b>视网膜 ≈ 光屏</b>，正常眼能调节晶状体的厚薄。</li>
+          <li><b>近视</b>：晶状体太厚/折光过强 → 像成视网膜<b>前</b> → 戴 <b>凹透镜</b>（发散）矫正。</li>
+          <li><b>远视</b>：晶状体太薄/折光太弱 → 像成视网膜<b>后</b> → 戴 <b>凸透镜</b>（会聚）矫正。</li>
+          <li>显微镜：物镜（焦距小）成倒立放大实像，目镜再放大。望远镜：物镜成倒立缩小实像，目镜放大。</li>
+        </ul>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① 放大镜成的是<b>正立放大虚像</b>（不是实像）；
+        ② 近视眼戴<b>凹透镜</b>（凹=发散，把像往后推到视网膜）；
+        ③ "成实像"要求 u&gt;f；u=f 不成像（出平行光）。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 凸透镜焦距 10cm，物体放在 15cm 处（f&lt;u&lt;2f）→ <b>倒立放大实像</b>（投影仪原理）。</div>
+        <div class="a">2. 近视眼应配 <b>凹透镜</b>；远视眼应配 <b>凸透镜</b>。</div>
+        <div class="a">3. 用照相机拍人像，人离镜头越远，像越 <b>小</b>（物远像近像变小）。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">先比 u 和 f、2f 的大小定区域，再套规律；实像都是倒立，虚像正立。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 10 · 凸透镜成像（核心，拖物距）</h4>
+        <p class="desc">拖动左边的「物」，看光怎么穿过透镜、像在哪里。蓝实线=实像（屏能接到），红虚线=虚像（屏接不到）。</p>
+        <canvas id="cvLens" width="640" height="300"></canvas>
+        <div class="ctrls">
+          <label>物距 u <span class="val" id="vU">260</span> px</label>
+          <input type="range" id="rU" min="60" max="420" value="260" step="2">
+          <label>焦距 f <span class="val" id="vF">110</span> px</label>
+          <input type="range" id="rF" min="60" max="160" value="110" step="2">
+        </div>
+        <div class="readout" id="mLens"></div>
+        <table class="tbl" id="tLens">
+          <tr><th>物距 u</th><th>像的性质</th><th>像距 v</th><th>应用</th></tr>
+          <tr><td>u &gt; 2f</td><td>倒立·缩小·实像</td><td>f &lt; v &lt; 2f</td><td>照相机</td></tr>
+          <tr><td>u = 2f</td><td>倒立·等大·实像</td><td>v = 2f</td><td>测焦距</td></tr>
+          <tr><td>f &lt; u &lt; 2f</td><td>倒立·放大·实像</td><td>v &gt; 2f</td><td>投影仪</td></tr>
+          <tr><td>u = f</td><td>不成像</td><td>—</td><td>平行光</td></tr>
+          <tr><td>u &lt; f</td><td>正立·放大·虚像</td><td>同侧</td><td>放大镜</td></tr>
+        </table>
+      </div>
+
+      <div class="demo">
+        <h4>实验 11 · 眼睛与视力矫正</h4>
+        <p class="desc">点「正常 / 近视 / 远视」，再看勾选「戴镜」后像是否回到视网膜上。红点=像的位置，绿点=正好落在视网膜。</p>
+        <canvas id="cvEye" width="640" height="240"></canvas>
+        <div class="ctrls">
+          <button class="btn" id="bEyeN">正常眼</button>
+          <button class="btn alt" id="bEyeNear">近视眼</button>
+          <button class="btn alt" id="bEyeFar">远视眼</button>
+          <label><input type="checkbox" id="cGlass"> 戴矫正眼镜</label>
+        </div>
+        <div class="readout">近视戴<b>凹透镜</b>、远视戴<b>凸透镜</b>，把像拉回到视网膜上才能看清。</div>
+      </div>
+    </section>
+
+    <!-- 第五章 物体的运动 -->
+    <section class="chapter" id="c6">
+      <h2>第五章 · 物体的运动</h2>
+      <div class="know">
+        <span class="tag">参照物</span><span class="tag">刻度尺估读</span><span class="tag">v=s/t</span><span class="tag">1m/s=3.6km/h</span><span class="tag">匀速直线</span>
+        <h3>一、长度与时间的测量</h3>
+        <ul>
+          <li>长度国际单位<b>米(m)</b>；常用 km、dm、cm、mm、μm、nm。1km=10³m，1m=10dm=100cm=1000mm=10⁶μm=10⁹nm。<b>光年</b>是长度单位。</li>
+          <li>刻度尺使用：<b>选</b>（量程、分度值）→ <b>放</b>（零刻度对齐、刻线贴物、不歪斜）→ <b>看</b>（视线垂直）→ <b>读</b>（读到分度值<b>下一位</b>，估读）→ <b>记</b>（数值+单位）。</li>
+          <li>时间单位<b>秒(s)</b>，常用 h、min；1h=60min=3600s。停表读数（小盘分钟+大盘秒）。</li>
+          <li><b>误差</b>：测量值与真实值之差，<b>不可避免</b>（只能减小：多次测量取平均、用精密仪器、改进方法）；<b>错误可避免</b>（读错、记错）。</li>
+        </ul>
+        <h3>二、运动的描述</h3>
+        <ul>
+          <li><b>机械运动</b>：物体位置的变化。</li>
+          <li><b>参照物</b>：判断运动时被选作标准的物体。参照物不同，运动情况可能不同 → 运动与静止是<b>相对</b>的。</li>
+          <li>选取原则：常选地面为参照物；<b>不能选研究对象自身</b>。</li>
+        </ul>
+        <h3>三、速度</h3>
+        <ul>
+          <li>物理意义：表示运动<b>快慢</b>。定义：路程与时间的比。公式 <b>v = s / t</b>。</li>
+          <li>单位 m/s、km/h；换算 <b>1 m/s = 3.6 km/h</b>（大→小除以 3.6；小→大乘 3.6）。</li>
+          <li><b>匀速直线运动</b>：沿直线且速度（快慢、方向）不变。s−t 图是过原点斜直线，v−t 图是水平线。</li>
+          <li>变速运动用<b>平均速度</b>粗略描述：v = s<sub>总</sub> / t<sub>总</sub>（≠速度的平均值）。</li>
+          <li>测速度实验（斜面小车）：刻度尺测 s、停表测 t，v=s/t；用金属片挡停小车让计时准确。</li>
+        </ul>
+      </div>
+
+      <div class="warnbox">
+        <b>⚠️ 易错：</b>
+        ① <b>误差≠错误</b>，误差不能消除只能减小；② 读数必须估读到分度值下一位；
+        ③ 平均速度要用<b>总路程÷总时间</b>；④ "快慢不变"还要"直线"才是匀速直线；
+        ⑤ 参照物不能选自己；1 m/s = <b>3.6</b> km/h（不是反过来）。
+      </div>
+
+      <div class="exbox">
+        <div class="q">典型例题</div>
+        <div class="a">1. 物体 2min 运动 720m，v = 720÷120 = <b>6 m/s = 21.6 km/h</b>。</div>
+        <div class="a">2. 小明跑 100m 用时 12.5s，平均速度 = <b>8 m/s</b>。</div>
+        <div class="a">3. 甲说路旁树后退，是以 <b>自己（乘坐的车）</b> 为参照物。</div>
+        <details><summary>看解题要点</summary>
+        <div class="a">单位换算先统一（km/h↔m/s 用 ×3.6 / ÷3.6）；平均速度 = 总路程/总时间。</div></details>
+      </div>
+
+      <div class="demo">
+        <h4>实验 12 · s-t 图像（看斜率知快慢）</h4>
+        <p class="desc">拖动「速度」，看路程-时间图像的斜率（倾斜程度）怎么变。线越陡，跑得越快。</p>
+        <canvas id="cvST" width="640" height="260"></canvas>
+        <div class="ctrls">
+          <label>速度 v <span class="val" id="vV">2</span> m/s</label>
+          <input type="range" id="rV" min="0" max="6" value="2" step="0.5">
+          <button class="btn" id="bSTstill">演示：静止</button>
+          <button class="btn alt" id="bSTfast">演示：加速</button>
+        </div>
+        <div class="readout">匀速直线：<b>斜直线</b>；静止：<b>水平线</b>；加速：<b>越来越陡</b>。</div>
+      </div>
+
+      <div class="demo quiz">
+        <h4>实验 13 · 速度计算小练习</h4>
+        <p class="desc">根据路程和时间算速度，输入答案点「判分」。算完点「换一题」。</p>
+        <div class="readout" id="qText">题目加载中…</div>
+        <div class="ctrls">
+          <input type="number" id="qAns" placeholder="速度 v (m/s)" step="0.1">
+          <button class="btn" id="bQcheck">判分</button>
+          <button class="btn green" id="bQnext">换一题</button>
+          <span class="fb" id="qFb"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 第七章 期末闯关 -->
+    <section class="chapter" id="c7">
+      <h2>🏆 期末闯关 · 六章混合作战</h2>
+      <div class="know">
+        <span class="tag">14 题</span><span class="tag">单选计分</span><span class="tag">即时反馈</span><span class="tag">可重来</span>
+        <p>把六章的重点混在一起考，做完看得分和等级。每题点选项后立即出对错和讲解，全部做完有总结。</p>
+      </div>
+      <div id="chBox"></div>
+    </section>
+
+    <div class="foot">苏科版八年级上册物理 · 互动学习页（完整版）｜ 内容由 AI 按教材进度整理，实验为示意演示，正式学习请配合课本与课堂。</div>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- 导航 ----------
+  var navs = document.querySelectorAll('nav.side button[data-go]');
+  navs.forEach(function(b){
+    b.addEventListener('click', function(){
+      navs.forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      document.querySelectorAll('section.chapter').forEach(function(s){s.classList.remove('show');});
+      document.getElementById(b.getAttribute('data-go')).classList.add('show');
+    });
+  });
+
+  // ---------- 工具 ----------
+  function fitCanvas(cv){
+    var ctx = cv.getContext('2d');
+    return ctx;
+  }
+  function clear(cv,ctx){ ctx.clearRect(0,0,cv.width,cv.height); }
+
+  // ========== 实验1 声音 ==========
+  var cvS = document.getElementById('cvSound'), ctxS = fitCanvas(cvS);
+  var audioCtx = null, osc = null, gain = null;
+  var freq = 440, amp = 0.6, phase = 0, rafS = null;
+  function drawSound(){
+    clear(cvS,ctxS);
+    var W=cvS.width, H=cvS.height, mid=H/2;
+    ctxS.strokeStyle='#94a3b8'; ctxS.beginPath(); ctxS.moveTo(0,mid); ctxS.lineTo(W,mid); ctxS.stroke();
+    ctxS.strokeStyle='#2563eb'; ctxS.lineWidth=2; ctxS.beginPath();
+    for(var x=0;x<W;x++){
+      var y = mid - Math.sin((x/40) * (freq/120) + phase) * (mid-20) * amp;
+      if(x===0) ctxS.moveTo(x,y); else ctxS.lineTo(x,y);
+    }
+    ctxS.stroke();
+    phase += 0.15;
+    rafS = requestAnimationFrame(drawSound);
+  }
+  drawSound();
+  document.getElementById('rFreq').addEventListener('input', function(e){
+    freq = +e.target.value; document.getElementById('vFreq').textContent = freq;
+    if(osc) osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+  });
+  document.getElementById('rAmp').addEventListener('input', function(e){
+    amp = +e.target.value; document.getElementById('vAmp').textContent = amp.toFixed(2);
+    if(gain) gain.gain.setValueAtTime(amp*0.3, audioCtx.currentTime);
+  });
+  document.getElementById('bPlay').addEventListener('click', function(){
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(osc){ return; }
+    osc = audioCtx.createOscillator(); gain = audioCtx.createGain();
+    osc.type='sine'; osc.frequency.value=freq; gain.gain.value=amp*0.3;
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start();
+  });
+  document.getElementById('bStop').addEventListener('click', function(){
+    if(osc){ osc.stop(); osc.disconnect(); osc=null; gain=null; }
+  });
+
+  // ========== 实验2 真空罩 ==========
+  var cvV = document.getElementById('cvVac'), ctxV = fitCanvas(cvV);
+  var vac = 0, vacRAF = null;
+  function drawVac(){
+    clear(cvV,ctxV);
+    var W=cvV.width,H=cvV.height, cx=W/2, cy=H/2;
+    ctxV.strokeStyle='#0ea5e9'; ctxV.lineWidth=3;
+    ctxV.beginPath(); ctxV.arc(cx,cy,80,Math.PI,0); ctxV.stroke();
+    ctxV.beginPath(); ctxV.moveTo(cx-80,cy); ctxV.lineTo(cx-80,cy+60); ctxV.lineTo(cx+80,cy+60); ctxV.lineTo(cx+80,cy); ctxV.stroke();
+    ctxV.strokeStyle='#475569'; ctxV.beginPath(); ctxV.moveTo(cx-95,cy+60); ctxV.lineTo(cx+95,cy+60); ctxV.stroke();
+    ctxV.fillStyle='#dc2626'; ctxV.beginPath(); ctxV.arc(cx,cy+18,18,0,7); ctxV.fill();
+    ctxV.fillStyle='#fff'; ctxV.font='14px sans-serif'; ctxV.fillText('铃', cx-8, cy+24);
+    var rings = Math.max(0, 4 - Math.round(vac*4));
+    ctxV.strokeStyle='rgba(37,99,235,'+(0.7-vac*0.7)+')'; ctxV.lineWidth=2;
+    for(var r=1;r<=rings;r++){ ctxV.beginPath(); ctxV.arc(cx,cy+18,30+r*16,0,7); ctxV.stroke(); }
+    var label = vac<0.3?'响亮':(vac<0.8?'变小':'几乎听不见（接近真空）');
+    ctxV.fillStyle='#334155'; ctxV.font='13px sans-serif';
+    ctxV.fillText('空气：'+(vac<0.05?'充足':(vac>0.95?'已抽空':'抽气中'))+' ｜ 声音：'+label, cx-150, cy-92);
+    document.getElementById('mVac').innerHTML='空气：<b>'+(vac<0.05?'充足':(vac>0.95?'已抽空':'抽气中'))+'</b> ｜ 声音：<b>'+label+'</b>（推理：真空不能传声）';
+  }
+  function vacStep(){
+    if(vac<1){ vac+=0.02; drawVac(); vacRAF=requestAnimationFrame(vacStep); }
+  }
+  document.getElementById('bVac').addEventListener('click',function(){ if(vacRAF)cancelAnimationFrame(vacRAF); vacStep(); });
+  document.getElementById('bVacR').addEventListener('click',function(){ if(vacRAF)cancelAnimationFrame(vacRAF); vac=0; drawVac(); });
+  drawVac();
+
+  // ========== 实验3 熔化曲线 ==========
+  var cvM = document.getElementById('cvMelt'), ctxM = fitCanvas(cvM);
+  var meltT=25, meltTime=0, meltType=null, meltRAF=null, meltPhase='固态';
+  function meltDraw(){
+    clear(cvM,ctxM);
+    var W=cvM.width,H=cvM.height, pad=40;
+    var x0=pad, y0=H-pad, x1=W-pad, y1=pad;
+    ctxM.strokeStyle='#94a3b8'; ctxM.beginPath(); ctxM.moveTo(x0,y0); ctxM.lineTo(x1,y0); ctxM.lineTo(x1-8,y0-6); ctxM.moveTo(x1,y0); ctxM.lineTo(x1-8,y0+6); ctxM.stroke();
+    ctxM.beginPath(); ctxM.moveTo(x0,y0); ctxM.lineTo(x0,y1); ctxM.stroke();
+    ctxM.fillStyle='#64748b'; ctxM.font='12px sans-serif';
+    ctxM.fillText('温度℃', 6, y1+4); ctxM.fillText('时间', x1-30, y0+18);
+    ctxM.fillText('100', x0-28, y1+4); ctxM.fillText('0', x0-14, y0+4);
+    ctxM.fillText('熔点', x0-2, y0-(100-25)/(150-25)*(y0-y1)+2);
+    ctxM.strokeStyle='#2563eb'; ctxM.lineWidth=3; ctxM.beginPath();
+    for(var t=0;t<=meltTime;t+=0.2){
+      var temp = meltTempAt(t);
+      var px = x0 + (t/60)*(x1-x0);
+      var py = y0 - (temp-25)/(150-25)*(y0-y1);
+      if(t===0) ctxM.moveTo(px,py); else ctxM.lineTo(px,py);
+    }
+    ctxM.stroke();
+    var ct = meltTempAt(meltTime);
+    var cpx = x0 + Math.min(meltTime,60)/60*(x1-x0);
+    var cpy = y0 - (ct-25)/(150-25)*(y0-y1);
+    ctxM.fillStyle='#dc2626'; ctxM.beginPath(); ctxM.arc(cpx,cpy,5,0,7); ctxM.fill();
+  }
+  function meltTempAt(t){
+    var melt=80;
+    if(meltType==='crystal'){
+      if(t<15) return 25 + (melt-25)*(t/15);
+      if(t<30) return melt;
+      if(t<50) return melt + (130-melt)*((t-30)/20);
+      return 130;
+    } else {
+      if(t<50) return 25 + (130-25)*(t/50);
+      return 130;
+    }
+  }
+  function meltPhaseNow(){
+    var ct=meltTempAt(meltTime);
+    if(meltType==='crystal'){
+      if(meltTime<15) return '固态（升温）';
+      if(meltTime<30) return '固液共存（熔化中，温度不变）';
+      return '液态（升温）';
+    }
+    if(meltTime<25) return '变软（升温）';
+    return '液态（升温）';
+  }
+  function meltStep(){
+    if(meltTime<60){ meltTime+=0.25; meltDraw(); document.getElementById('mMelt').innerHTML='状态：<b>'+meltPhaseNow()+'</b> ｜ 温度：<b>'+meltTempAt(meltTime).toFixed(0)+'℃</b>'; meltRAF=requestAnimationFrame(meltStep); }
+  }
+  document.getElementById('bMeltC').addEventListener('click',function(){ meltType='crystal'; meltTime=0; if(meltRAF)cancelAnimationFrame(meltRAF); meltStep(); });
+  document.getElementById('bMeltN').addEventListener('click',function(){ meltType='non'; meltTime=0; if(meltRAF)cancelAnimationFrame(meltRAF); meltStep(); });
+  document.getElementById('bMeltR').addEventListener('click',function(){ if(meltRAF)cancelAnimationFrame(meltRAF); meltType=null; meltTime=0; meltDraw(); document.getElementById('mMelt').innerHTML='状态：<b>未开始</b> ｜ 温度：<b>25℃</b>'; });
+  meltDraw();
+
+  // ========== 实验4 水沸腾 ==========
+  var cvB = document.getElementById('cvBoil'), ctxB = fitCanvas(cvB);
+  var boilT=20, boilRAF=null;
+  function boilDraw(){
+    clear(cvB,ctxB);
+    var W=cvB.width,H=cvB.height;
+    var bx=W/2-70, by=60, bw=140, bh=140;
+    ctxB.strokeStyle='#475569'; ctxB.lineWidth=3;
+    ctxB.beginPath(); ctxB.moveTo(bx,by); ctxB.lineTo(bx,by+bh); ctxB.lineTo(bx+bw,by+bh); ctxB.lineTo(bx+bw,by); ctxB.stroke();
+    ctxB.fillStyle='#bfdbfe'; ctxB.fillRect(bx+3,by+30,bw-6,bh-33);
+    ctxB.strokeStyle='#dc2626'; ctxB.lineWidth=4; ctxB.beginPath(); ctxB.moveTo(bx+bw+30, by-10); ctxB.lineTo(bx+bw+30, by+bh); ctxB.stroke();
+    if(boilT>=100){
+      ctxB.fillStyle='rgba(255,255,255,.9)';
+      for(var i=0;i<10;i++){
+        var r=3+ (i%4);
+        var bxp = bx+20 + (i*13)%(bw-40);
+        var byp = by+bh-10 - ((Date.now()/30 + i*40)% (bh-40));
+        ctxB.beginPath(); ctxB.arc(bxp,byp,r,0,7); ctxB.fill();
+      }
+    }
+    ctxB.fillStyle='#334155'; ctxB.font='13px sans-serif';
+    ctxB.fillText('温度计 '+boilT.toFixed(0)+'℃', bx+bw+45, by+10);
+  }
+  function boilStep(){
+    if(boilT<100){ boilT+=0.4; }
+    else { boilT=100; }
+    boilDraw();
+    document.getElementById('mBoil').innerHTML='温度：<b>'+boilT.toFixed(0)+'℃</b>'+(boilT>=100?' ｜ <b style="color:#dc2626">沸腾中！</b>':'');
+    if(boilT<100) boilRAF=requestAnimationFrame(boilStep);
+  }
+  document.getElementById('bBoil').addEventListener('click',function(){ if(boilRAF)cancelAnimationFrame(boilRAF); boilStep(); });
+  document.getElementById('bBoilR').addEventListener('click',function(){ if(boilRAF)cancelAnimationFrame(boilRAF); boilT=20; boilDraw(); document.getElementById('mBoil').innerHTML='温度：<b>20℃</b>'; });
+  boilDraw();
+
+  // ========== 实验5 光的反射 ==========
+  var cvR = document.getElementById('cvReflect'), ctxR = fitCanvas(cvR);
+  var mirrorY = 180, reflectAngle = 35;
+  var dragR = false;
+  function drawReflect(){
+    clear(cvR,ctxR);
+    var W=cvR.width,H=cvR.height, mx=W/2;
+    ctxR.strokeStyle='#0ea5e9'; ctxR.lineWidth=4; ctxR.beginPath(); ctxR.moveTo(40,mirrorY); ctxR.lineTo(W-40,mirrorY); ctxR.stroke();
+    ctxR.fillStyle='#0ea5e9'; ctxR.font='12px sans-serif'; ctxR.fillText('镜面', W-90, mirrorY-8);
+    ctxR.strokeStyle='#94a3b8'; ctxR.setLineDash([5,4]); ctxR.beginPath(); ctxR.moveTo(mx,40); ctxR.lineTo(mx,mirrorY+40); ctxR.stroke(); ctxR.setLineDash([]);
+    var ix=mx, iy=mirrorY;
+    var a = reflectAngle*Math.PI/180;
+    var inX = ix - Math.cos(a)*150, inY = iy - Math.sin(a)*150;
+    ctxR.strokeStyle='#dc2626'; ctxR.lineWidth=3; ctxR.beginPath(); ctxR.moveTo(inX,inY); ctxR.lineTo(ix,iy); ctxR.stroke();
+    var outX = ix + Math.cos(a)*150, outY = iy - Math.sin(a)*150;
+    ctxR.strokeStyle='#16a34a'; ctxR.beginPath(); ctxR.moveTo(ix,iy); ctxR.lineTo(outX,outY); ctxR.stroke();
+    ctxR.fillStyle='#dc2626'; ctxR.beginPath(); ctxR.arc(inX,inY,8,0,7); ctxR.fill();
+    ctxR.fillStyle='#334155'; ctxR.font='13px sans-serif';
+    ctxR.fillText('入射光', inX-10, inY-12); ctxR.fillText('反射光', outX-10, outY-12);
+    document.getElementById('mReflect').innerHTML='入射角：<b>'+reflectAngle.toFixed(0)+'°</b> ｜ 反射角：<b>'+reflectAngle.toFixed(0)+'°</b>';
+  }
+  function reflectPos(e){
+    var r=cvR.getBoundingClientRect();
+    var px=(e.clientX-r.left)*(cvR.width/r.width);
+    var py=(e.clientY-r.top)*(cvR.height/r.height);
+    var dx=px-cvR.width/2, dy=mirrorY-py;
+    if(dx<=0||dy<=0) return;
+    reflectAngle = Math.max(5,Math.min(80, Math.atan2(dy,dx)*180/Math.PI));
+    drawReflect();
+  }
+  cvR.addEventListener('mousedown',function(e){dragR=true;reflectPos(e);});
+  window.addEventListener('mousemove',function(e){if(dragR)reflectPos(e);});
+  window.addEventListener('mouseup',function(){dragR=false;});
+  cvR.addEventListener('touchstart',function(e){dragR=true;reflectPos(e.touches[0]);e.preventDefault();},{passive:false});
+  cvR.addEventListener('touchmove',function(e){if(dragR){reflectPos(e.touches[0]);e.preventDefault();}},{passive:false});
+  cvR.addEventListener('touchend',function(){dragR=false;});
+  drawReflect();
+
+  // ========== 实验6 平面镜成像 ==========
+  var cvMi = document.getElementById('cvMirror'), ctxMi = fitCanvas(cvMi);
+  var mirrorX = cvMi.width*0.55, objH = 70, objY = 200, dragMi=false;
+  function drawMirror(){
+    clear(cvMi,ctxMi);
+    var W=cvMi.width,H=cvMi.height;
+    ctxMi.strokeStyle='#0ea5e9'; ctxMi.lineWidth=4; ctxMi.beginPath(); ctxMi.moveTo(mirrorX,40); ctxMi.lineTo(mirrorX,H-40); ctxMi.stroke();
+    ctxMi.fillStyle='#0ea5e9'; ctxMi.font='12px sans-serif'; ctxMi.fillText('平面镜', mirrorX-30, 32);
+    var ox = mirrorX-120;
+    ctxMi.strokeStyle='#dc2626'; ctxMi.lineWidth=4; ctxMi.beginPath(); ctxMi.moveTo(ox,objY); ctxMi.lineTo(ox,objY-objH); ctxMi.stroke();
+    var dist = mirrorX-ox;
+    var ix = mirrorX+dist;
+    ctxMi.strokeStyle='#dc2626'; ctxMi.setLineDash([6,4]); ctxMi.beginPath(); ctxMi.moveTo(ix,objY); ctxMi.lineTo(ix,objY-objH); ctxMi.stroke(); ctxMi.setLineDash([]);
+    ctxMi.strokeStyle='#94a3b8'; ctxMi.setLineDash([3,3]);
+    ctxMi.beginPath(); ctxMi.moveTo(ox,objY+14); ctxMi.lineTo(mirrorX,objY+14); ctxMi.lineTo(ix,objY+14); ctxMi.stroke(); ctxMi.setLineDash([]);
+    ctxMi.fillStyle='#334155'; ctxMi.font='12px sans-serif';
+    ctxMi.fillText('物', ox-12, objY+30); ctxMi.fillText('像（虚）', ix-18, objY+30);
+  }
+  function mirrorPos(e){
+    var r=cvMi.getBoundingClientRect();
+    var px=(e.clientX-r.left)*(cvMi.width/r.width);
+    objH = Math.max(30, Math.min(150, (objY - (e.clientY-r.top)*(cvMi.height/r.height))));
+    drawMirror();
+  }
+  cvMi.addEventListener('mousedown',function(e){dragMi=true;mirrorPos(e);});
+  window.addEventListener('mousemove',function(e){if(dragMi)mirrorPos(e);});
+  window.addEventListener('mouseup',function(){dragMi=false;});
+  drawMirror();
+
+  // ========== 实验7 小孔成像 ==========
+  var cvH = document.getElementById('cvHole'), ctxH = fitCanvas(cvH);
+  var holeO=3, holeS=4;
+  function drawHole(){
+    clear(cvH,ctxH);
+    var W=cvH.width,H=cvH.height, midY=H/2;
+    var candleX=70, holeX=W/2, screenX=W-70;
+    ctxH.fillStyle='#f59e0b'; ctxH.fillRect(candleX-6, midY-50, 12, 60);
+    ctxH.fillStyle='#dc2626'; ctxH.beginPath(); ctxH.arc(candleX, midY-54, 8, 0, 7); ctxH.fill();
+    ctxH.strokeStyle='#475569'; ctxH.lineWidth=3; ctxH.beginPath(); ctxH.moveTo(screenX, midY-70); ctxH.lineTo(screenX, midY+70); ctxH.stroke();
+    ctxH.strokeStyle='#334155'; ctxH.lineWidth=2; ctxH.beginPath(); ctxH.moveTo(holeX, midY-90); ctxH.lineTo(holeX, midY-8); ctxH.moveTo(holeX, midY+8); ctxH.lineTo(holeX, midY+90); ctxH.stroke();
+    var ratio = holeS/holeO;
+    var ih = Math.min(80, 50*ratio);
+    ctxH.strokeStyle='#dc2626'; ctxH.lineWidth=4;
+    ctxH.beginPath(); ctxH.moveTo(screenX-2, midY+ih/2); ctxH.lineTo(screenX-2, midY-ih/2); ctxH.stroke();
+    ctxH.strokeStyle='rgba(37,99,235,.5)'; ctxH.lineWidth=1.5;
+    ctxH.beginPath(); ctxH.moveTo(candleX, midY-50); ctxH.lineTo(holeX, midY); ctxH.lineTo(screenX, midY+ih/2); ctxH.stroke();
+    ctxH.beginPath(); ctxH.moveTo(candleX, midY+10); ctxH.lineTo(holeX, midY); ctxH.lineTo(screenX, midY-ih/2); ctxH.stroke();
+    ctxH.fillStyle='#334155'; ctxH.font='12px sans-serif';
+    ctxH.fillText('蜡烛', candleX-16, midY+86); ctxH.fillText('小孔', holeX-14, midY+104); ctxH.fillText('屏（倒立像）', screenX-46, midY+86);
+  }
+  document.getElementById('rHoleO').addEventListener('input',function(e){holeO=+e.target.value;document.getElementById('vHoleO').textContent=holeO;drawHole();});
+  document.getElementById('rHoleS').addEventListener('input',function(e){holeS=+e.target.value;document.getElementById('vHoleS').textContent=holeS;drawHole();});
+  drawHole();
+
+  // ========== 实验8 折射（筷子弯折） ==========
+  var cvRe = document.getElementById('cvRefract'), ctxRe = fitCanvas(cvRe);
+  (function drawRefract(){
+    clear(cvRe,ctxRe);
+    var W=cvRe.width,H=cvRe.height;
+    ctxRe.fillStyle='#eff6ff'; ctxRe.fillRect(0,0,W,H/2);
+    ctxRe.fillStyle='#bfdbfe'; ctxRe.fillRect(0,H/2,W,H/2);
+    ctxRe.strokeStyle='#0ea5e9'; ctxRe.lineWidth=2; ctxRe.beginPath(); ctxRe.moveTo(0,H/2); ctxRe.lineTo(W,H/2); ctxRe.stroke();
+    ctxRe.fillStyle='#334155'; ctxRe.font='12px sans-serif';
+    ctxRe.fillText('空气', 14, 20); ctxRe.fillText('水', 14, H/2+20);
+    ctxRe.strokeStyle='#64748b'; ctxRe.lineWidth=3;
+    ctxRe.beginPath(); ctxRe.moveTo(W/2-60,H/2); ctxRe.lineTo(W/2-50,H-20); ctxRe.lineTo(W/2+50,H-20); ctxRe.lineTo(W/2+60,H/2); ctxRe.stroke();
+    var topX=W/2, topY=40;
+    var waterX=W/2, waterY=H/2;
+    var botX=W/2+34, botY=H-30;
+    ctxRe.strokeStyle='#92400e'; ctxRe.lineWidth=6; ctxRe.lineCap='round';
+    ctxRe.beginPath(); ctxRe.moveTo(topX,topY); ctxRe.lineTo(waterX,waterY); ctxRe.stroke();
+    ctxRe.beginPath(); ctxRe.moveTo(waterX,waterY); ctxRe.lineTo(botX,botY); ctxRe.stroke();
+    ctxRe.fillStyle='#334155'; ctxRe.font='13px sans-serif';
+    ctxRe.fillText('看！水面处像断了一截、往上翘——这就是折射', 20, H-6);
+  })();
+
+  // ========== 实验9 池水变浅 ==========
+  var cvP = document.getElementById('cvPool'), ctxP = fitCanvas(cvP);
+  (function drawPool(){
+    clear(cvP,ctxP);
+    var W=cvP.width,H=cvP.height, surf=H*0.42;
+    ctxP.fillStyle='#eff6ff'; ctxP.fillRect(0,0,W,surf);
+    ctxP.fillStyle='#bfdbfe'; ctxP.fillRect(0,surf,W,H-surf);
+    ctxP.strokeStyle='#0ea5e9'; ctxP.lineWidth=2; ctxP.beginPath(); ctxP.moveTo(0,surf); ctxP.lineTo(W,surf); ctxP.stroke();
+    var sx=W/2, sy=H-30;
+    ctxP.fillStyle='#92400e'; ctxP.beginPath(); ctxP.arc(sx,sy,16,0,7); ctxP.fill();
+    ctxP.fillStyle='#334155'; ctxP.font='12px sans-serif'; ctxP.fillText('石头实际位置', sx-46, sy+30);
+    var ay=surf + (sy-surf)*0.6;
+    ctxP.strokeStyle='#dc2626'; ctxP.setLineDash([6,4]); ctxP.beginPath(); ctxP.arc(sx,ay,16,0,7); ctxP.stroke(); ctxP.setLineDash([]);
+    ctxP.fillStyle='#dc2626'; ctxP.fillText('看到的位置（更浅）', sx-54, ay-22);
+    ctxP.strokeStyle='#2563eb'; ctxP.lineWidth=1.5;
+    ctxP.beginPath(); ctxP.moveTo(60,30); ctxP.lineTo(sx,ay); ctxP.stroke();
+    ctxP.strokeStyle='rgba(37,99,235,.4)';
+    ctxP.beginPath(); ctxP.moveTo(60,30); ctxP.lineTo(sx,surf); ctxP.lineTo(sx,sy); ctxP.stroke();
+  })();
+
+  // ========== 实验10 凸透镜成像 ==========
+  var cvL = document.getElementById('cvLens'), ctxL = fitCanvas(cvL);
+  var LX = cvL.width/2, AY = cvL.height/2, OH = 70;
+  var uVal=260, fVal=110;
+  function drawLens(){
+    clear(cvL,ctxL);
+    var W=cvL.width,H=cvL.height;
+    ctxL.strokeStyle='#94a3b8'; ctxL.beginPath(); ctxL.moveTo(0,AY); ctxL.lineTo(W,AY); ctxL.stroke();
+    ctxL.fillStyle='rgba(14,165,233,.18)'; ctxL.strokeStyle='#0ea5e9'; ctxL.lineWidth=3;
+    ctxL.beginPath(); ctxL.ellipse(LX, AY, 8, 110, 0, 0, 7); ctxL.fill(); ctxL.stroke();
+    ctxL.fillStyle='#0ea5e9'; ctxL.font='12px sans-serif'; ctxL.fillText('凸透镜', LX-26, AY+125);
+    var F1=LX-fVal, F2=LX+fVal;
+    ctxL.fillStyle='#f59e0b'; ctxL.beginPath(); ctxL.arc(F1,AY,4,0,7); ctxL.arc(F2,AY,4,0,7); ctxL.fill();
+    ctxL.fillText('F', F1-4, AY-8); ctxL.fillText('F', F2-4, AY-8);
+    var OX = LX - uVal;
+    var objTopY = AY - OH;
+    ctxL.strokeStyle='#dc2626'; ctxL.lineWidth=4; ctxL.beginPath(); ctxL.moveTo(OX,AY); ctxL.lineTo(OX,objTopY); ctxL.stroke();
+    ctxL.fillStyle='#dc2626'; ctxL.font='12px sans-serif'; ctxL.fillText('物', OX-6, AY+18);
+    var u=uVal, f=fVal;
+    var v = (u*f)/(u-f);
+    var hi = OH * (v/u);
+    ctxL.strokeStyle='#dc2626'; ctxL.lineWidth=2; ctxL.setLineDash([]);
+    ctxL.beginPath(); ctxL.moveTo(OX,objTopY); ctxL.lineTo(LX,objTopY); ctxL.stroke();
+    ctxL.beginPath(); ctxL.moveTo(LX,objTopY); ctxL.lineTo(LX + v, AY + hi); ctxL.stroke();
+    ctxL.beginPath(); ctxL.moveTo(OX,objTopY); ctxL.lineTo(LX + v, AY + hi); ctxL.stroke();
+    var IX = LX + v;
+    var imgTopY = AY + hi;
+    if(v>0){
+      ctxL.strokeStyle='#2563eb'; ctxL.lineWidth=4; ctxL.beginPath(); ctxL.moveTo(IX,AY); ctxL.lineTo(IX,imgTopY); ctxL.stroke();
+      ctxL.fillStyle='#2563eb'; ctxL.fillText('实像', IX-10, AY+18);
+    } else {
+      ctxL.strokeStyle='#dc2626'; ctxL.setLineDash([6,4]); ctxL.lineWidth=4;
+      ctxL.beginPath(); ctxL.moveTo(IX,AY); ctxL.lineTo(IX,imgTopY); ctxL.stroke(); ctxL.setLineDash([]);
+      ctxL.fillStyle='#dc2626'; ctxL.fillText('虚像', IX-10, AY+18);
+    }
+    var nat, cls1, cls2, cls3;
+    if(u>2*f){ nat='倒立 · 缩小 · 实像'; cls1='down';cls2='small';cls3='real'; }
+    else if(Math.abs(u-2*f)<2){ nat='倒立 · 等大 · 实像'; cls1='down';cls2='';cls3='real'; }
+    else if(u>f){ nat='倒立 · 放大 · 实像'; cls1='down';cls2='big';cls3='real'; }
+    else if(Math.abs(u-f)<2){ nat='不成像（平行光）'; cls1='';cls2='';cls3='real'; }
+    else { nat='正立 · 放大 · 虚像'; cls1='up';cls2='big';cls3='virtual'; }
+    document.getElementById('mLens').innerHTML =
+      '物距 u = <b>'+u.toFixed(0)+'</b> px，焦距 f = <b>'+f.toFixed(0)+'</b> px ｜ '+
+      '像：<span class="pill '+cls1+'">'+(cls1==='up'?'正立':(cls1==='down'?'倒立':''))+'</span>'+
+      '<span class="pill '+cls2+'">'+(cls2==='big'?'放大':(cls2==='small'?'缩小':(cls2===''&&nat.indexOf('等大')>=0?'等大':'')))+'</span>'+
+      '<span class="pill '+cls3+'">'+(cls3==='real'?'实像':'虚像')+'</span>'+
+      ' ｜ 像距 v = <b>'+v.toFixed(0)+'</b> px';
+  }
+  document.getElementById('rU').addEventListener('input',function(e){uVal=+e.target.value;document.getElementById('vU').textContent=uVal;drawLens();});
+  document.getElementById('rF').addEventListener('input',function(e){fVal=+e.target.value;document.getElementById('vF').textContent=fVal;drawLens();});
+  drawLens();
+
+  // ========== 实验11 眼睛与视力矫正 ==========
+  var cvE = document.getElementById('cvEye'), ctxE = fitCanvas(cvE);
+  var eyeType='normal', wearGlass=false;
+  function drawEye(){
+    clear(cvE,ctxE);
+    var W=cvE.width,H=cvE.height, AY=H/2;
+    var OX=50, LX=W*0.45, RX=W-70;
+    var objTop=AY-50;
+    ctxE.strokeStyle='#dc2626'; ctxE.lineWidth=3; ctxE.beginPath(); ctxE.moveTo(OX,AY); ctxE.lineTo(OX,objTop); ctxE.stroke();
+    ctxE.fillStyle='#dc2626'; ctxE.font='12px sans-serif'; ctxE.fillText('物体', OX-10, AY+18);
+    ctxE.fillStyle='rgba(14,165,233,.25)'; ctxE.strokeStyle='#0ea5e9'; ctxE.lineWidth=3;
+    ctxE.beginPath(); ctxE.ellipse(LX,AY,7,60,0,0,7); ctxE.fill(); ctxE.stroke();
+    if(wearGlass){ ctxE.strokeStyle='#f59e0b'; ctxE.lineWidth=4; ctxE.beginPath(); ctxE.ellipse(LX-30,AY,6,55,0,0,7); ctxE.stroke(); }
+    ctxE.strokeStyle='#475569'; ctxE.lineWidth=4; ctxE.beginPath(); ctxE.moveTo(RX,AY-70); ctxE.lineTo(RX,AY+70); ctxE.stroke();
+    ctxE.fillStyle='#475569'; ctxE.font='12px sans-serif'; ctxE.fillText('视网膜', RX-22, AY+88);
+    ctxE.fillText('晶状体', LX-18, AY-72);
+    var focusX;
+    if(eyeType==='normal') focusX=RX;
+    else if(eyeType==='near') focusX = wearGlass? RX : RX-70;
+    else focusX = wearGlass? RX : RX+70;
+    ctxE.strokeStyle='#dc2626'; ctxE.lineWidth=2;
+    ctxE.beginPath(); ctxE.moveTo(OX,objTop); ctxE.lineTo(LX,objTop); ctxE.lineTo(focusX,AY); ctxE.stroke();
+    var hit = Math.abs(focusX-RX)<6;
+    ctxE.fillStyle = hit? '#16a34a':'#dc2626'; ctxE.beginPath(); ctxE.arc(focusX,AY,6,0,7); ctxE.fill();
+    ctxE.fillStyle='#334155'; ctxE.font='13px sans-serif';
+    var msg = hit? '像正好落在视网膜上，看清了！' : (focusX<RX? '像成在视网膜前方（近视眼）':'像成在视网膜后方（远视眼）');
+    ctxE.fillText(msg, 20, 26);
+  }
+  document.getElementById('bEyeN').addEventListener('click',function(){eyeType='normal';drawEye();});
+  document.getElementById('bEyeNear').addEventListener('click',function(){eyeType='near';drawEye();});
+  document.getElementById('bEyeFar').addEventListener('click',function(){eyeType='far';drawEye();});
+  document.getElementById('cGlass').addEventListener('change',function(e){wearGlass=e.target.checked;drawEye();});
+  drawEye();
+
+  // ========== 实验12 s-t 图像 ==========
+  var cvST = document.getElementById('cvST'), ctxST = fitCanvas(cvST);
+  var stV=2, stMode='uniform';
+  function drawST(){
+    clear(cvST,ctxST);
+    var W=cvST.width,H=cvST.height, pad=40;
+    var x0=pad,y0=H-pad,x1=W-pad,y1=pad;
+    ctxST.strokeStyle='#94a3b8'; ctxST.beginPath(); ctxST.moveTo(x0,y0); ctxST.lineTo(x1,y0); ctxST.moveTo(x0,y0); ctxST.lineTo(x0,y1); ctxST.stroke();
+    ctxST.fillStyle='#64748b'; ctxST.font='12px sans-serif'; ctxST.fillText('s', 14, y1+4); ctxST.fillText('t', x1-16, y0+18);
+    ctxST.strokeStyle='#2563eb'; ctxST.lineWidth=3; ctxST.beginPath();
+    for(var t=0;t<=60;t+=1){
+      var s;
+      if(stMode==='still') s=0;
+      else if(stMode==='uniform') s=stV*t;
+      else s=0.02*t*t*stV;
+      s=Math.min(s, (y0-y1));
+      var px=x0+(t/60)*(x1-x0);
+      var py=y0-(s/(y0-y1))*(y0-y1);
+      if(t===0) ctxST.moveTo(px,py); else ctxST.lineTo(px,py);
+    }
+    ctxST.stroke();
+  }
+  document.getElementById('rV').addEventListener('input',function(e){stV=+e.target.value;document.getElementById('vV').textContent=stV;if(stMode==='uniform')drawST();});
+  document.getElementById('bSTstill').addEventListener('click',function(){stMode='still';drawST();});
+  document.getElementById('bSTfast').addEventListener('click',function(){stMode='accel';drawST();});
+  drawST();
+
+  // ========== 实验13 速度计算 ==========
+  var qS=0,qT=0;
+  function qNew(){
+    qS = (Math.floor(Math.random()*18)+2)*10;
+    qT = (Math.floor(Math.random()*9)+2);
+    document.getElementById('qText').innerHTML='一辆汽车在 <b>'+qT+' 秒</b> 内行驶了 <b>'+qS+' 米</b>，求它的速度 v = ? (m/s)';
+    document.getElementById('qAns').value='';
+    document.getElementById('qFb').textContent='';
+  }
+  document.getElementById('bQcheck').addEventListener('click',function(){
+    var ans=parseFloat(document.getElementById('qAns').value);
+    var correct=qS/qT;
+    var fb=document.getElementById('qFb');
+    if(Math.abs(ans-correct)<0.1){ fb.textContent='✅ 答对啦！v = s/t = '+correct.toFixed(1)+' m/s'; fb.style.color='#16a34a'; }
+    else { fb.textContent='❌ 再算算：v = s÷t = '+qS+'÷'+qT+' = '+correct.toFixed(1)+' m/s'; fb.style.color='#dc2626'; }
+  });
+  document.getElementById('bQnext').addEventListener('click',qNew);
+  qNew();
+
+  // ========== 期末闯关 ==========
+  var CHALLENGE = [
+    {q:'声音是由物体的什么产生的？', opts:['运动','振动','温度变化','光的反射'], a:1, why:'一切发声的物体都在振动，振动停止发声也停止。'},
+    {q:'15℃ 空气中声音的速度约为？', opts:['34 m/s','340 m/s','3400 m/s','3×10⁸ m/s'], a:1, why:'15℃ 空气中声速约 340 m/s；3×10⁸ m/s 是光速。'},
+    {q:'男低音放声高歌，女高音轻声伴唱，音调高的是？', opts:['男低音','女高音','一样高','无法判断'], a:1, why:'音调由频率决定，女高音频率高、音调高；男低音响度大但音调低。'},
+    {q:'夏天冰棍周围冒出的"白气"实质是？', opts:['水蒸气','小水滴','小冰晶','二氧化碳'], a:1, why:'"白气"是空气中的水蒸气遇冷液化成的小水滴，不是气体。'},
+    {q:'冰是晶体，熔化过程中温度怎样变化？', opts:['持续升高','保持不变','先升后降','一直降低'], a:1, why:'晶体有固定熔点，熔化时吸热但温度不变（固液共存）。'},
+    {q:'冬天窗户玻璃上结的冰花，是水蒸气发生了？', opts:['凝固','液化','凝华','升华'], a:2, why:'冰花是水蒸气遇冷直接变成固态小冰晶，属于凝华。'},
+    {q:'光在真空中的传播速度约为？', opts:['3×10⁸ m/s','340 m/s','3×10⁵ km/h','0'], a:0, why:'真空中光速 c = 3×10⁸ m/s，是宇宙中最快的速度。'},
+    {q:'平面镜成像的特点是？', opts:['正立等大的虚像','倒立等大的实像','正立放大的实像','倒立缩小的虚像'], a:0, why:'平面镜成的是正立、等大、左右相反的虚像，光屏接不到。'},
+    {q:'斜插在水中的筷子看起来弯折，这是光的？', opts:['反射','折射','直线传播','色散'], a:1, why:'光从水斜射入空气发生折射，看起来筷子在水面处弯折。'},
+    {q:'凸透镜焦距 10cm，物体放在 15cm 处，成像性质是？', opts:['倒立缩小实像','倒立放大实像','正立放大虚像','不成像'], a:1, why:'f<u<2f（10<15<20），成倒立放大的实像，应用是投影仪。'},
+    {q:'近视眼应配戴哪种透镜矫正？', opts:['凸透镜','凹透镜','平面镜','凸面镜'], a:1, why:'近视眼像成视网膜前，用凹透镜发散光线把像拉回视网膜。'},
+    {q:'1 m/s 等于多少 km/h？', opts:['3.6 km/h','36 km/h','0.36 km/h','360 km/h'], a:0, why:'1 m/s = 3.6 km/h（小换大乘 3.6）。'},
+    {q:'关于误差，下列说法正确的是？', opts:['误差可以避免','误差不可避免只能减小','误差就是错误','以上都不对'], a:1, why:'误差是测量值与真实值之差，不可避免，只能减小；错误才可避免。'},
+    {q:'某物体做匀速直线运动，速度 2 m/s，10 秒内通过的路程是？', opts:['0.2 m','5 m','20 m','200 m'], a:2, why:'s = vt = 2×10 = 20 m。'}
+  ];
+  var chI=0, chScore=0, chAnswered=false;
+  function chRender(){
+    var box=document.getElementById('chBox');
+    if(chI>=CHALLENGE.length){
+      var rate=Math.round(chScore/CHALLENGE.length*100);
+      var grade = rate>=90?'优秀 🌟':(rate>=70?'良好 👍':'继续加油 💪');
+      box.innerHTML='<div class="qcard"><div class="qt">闯关完成！</div>'+
+        '<div class="a" style="font-size:18px">得分 <b>'+chScore+' / '+CHALLENGE.length+'</b>（'+rate+'%）—— '+grade+'</div>'+
+        '<div class="bar"><i style="width:'+rate+'%"></i></div>'+
+        '<button class="btn green" onclick="chRestart()">再来一次</button></div>';
+      return;
+    }
+    var c=CHALLENGE[chI];
+    var html='<div class="qcard"><div class="num">第 '+(chI+1)+' / '+CHALLENGE.length+' 题</div>'+
+      '<div class="qt">'+c.q+'</div><div class="opts">';
+    c.opts.forEach(function(o,i){ html+='<button class="opt" onclick="chPick('+i+')">'+String.fromCharCode(65+i)+'. '+o+'</button>'; });
+    html+='</div><div class="why" id="chWhy"></div></div>';
+    box.innerHTML=html;
+  }
+  window.chPick=function(i){
+    if(chAnswered) return;
+    chAnswered=true;
+    var c=CHALLENGE[chI];
+    var btns=document.querySelectorAll('#chBox .opt');
+    btns.forEach(function(b,idx){ if(idx===c.a) b.classList.add('right'); else if(idx===i) b.classList.add('wrong'); });
+    var why=document.getElementById('chWhy');
+    why.innerHTML=(i===c.a?'✅ 答对啦！':'❌ 正确答案：'+String.fromCharCode(65+c.a)+'. ')+c.why+
+      ' <button class="btn" style="margin-left:10px" onclick="chNext()">下一题 ▶</button>';
+    if(i===c.a) chScore++;
+  };
+  window.chNext=function(){ chI++; chAnswered=false; chRender(); };
+  window.chRestart=function(){ chI=0; chScore=0; chAnswered=false; chRender(); };
+  chRender();
+
+})();
+</script>
+</body>
+</html>
