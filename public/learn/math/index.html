@@ -725,8 +725,8 @@ function initMirror(){
 function initPyth(){
   var cv=document.getElementById('cvPyth'), x=cv.getContext('2d');
   var O={x:170,y:280}; // 直角顶点
-  var B={x:170,y:120}; // 竖直直角边端点，可拖
-  var A={x:370,y:280}; // 水平直角边端点，可拖
+  var B={x:170,y:160}; // 竖直直角边端点，可拖（限制 a≤120，使三个正方形不出画布）
+  var A={x:290,y:280}; // 水平直角边端点，可拖（限制 b≤120）
   function redraw(){
     x.clearRect(0,0,cv.width,cv.height);
     // 直角三角形 O(直角)-B-A
@@ -761,8 +761,8 @@ function initPyth(){
     m.innerHTML='a² + b² = '+((a*a)+(b*b)).toFixed(0)+' ， c² = '+(c*c).toFixed(0)+' ｜ <b>两者相等 ✅</b>';
   }
   bindDrag(cv,function(){return [B,A];},function(i,p){
-    if(i===0){B.x=O.x; B.y=Math.max(60,Math.min(280,p.y));}
-    if(i===1){A.y=O.y; A.x=Math.max(160,Math.min(560,p.x));}
+    if(i===0){B.x=O.x; B.y=Math.max(160,Math.min(280,p.y));}
+    if(i===1){A.y=O.y; A.x=Math.max(170,Math.min(290,p.x));}
   },redraw);
   redraw();
 }
@@ -827,7 +827,7 @@ function initRoot(){
 /* ============ 演示6：坐标系 ============ */
 function initCoord(){
   var cv=document.getElementById('cvCoord'), x=cv.getContext('2d');
-  var cx=cv.width/2, cy=cv.height/2, sc=30; // 每格像素
+  var cx=cv.width/2, cy=cv.height/2, sc=16; // 每格像素（缩小使 ±10 格的点都在画布内可见）
   var P={x:2,y:1}; // 逻辑坐标
   function toPix(c){return {x:cx+c.x*sc, y:cy-c.y*sc};}
   function fromPix(p){return {x:Math.round((p.x-cx)/sc), y:Math.round((cy-p.y)/sc)};}
@@ -887,7 +887,7 @@ function initLine(){
     // 截距点
     var yb=cy-b*sc;
     if(yb>0&&yb<cv.height){x.fillStyle='#dc2626'; x.beginPath(); x.arc(cx,yb,4,0,2*Math.PI); x.fill();}
-    var xb=cx+(b/k)*sc;
+    var xb=cx+(-b/k)*sc;
     if(k!==0&&xb>0&&xb<cv.width){x.fillStyle='#16a34a'; x.beginPath(); x.arc(xb,cy,4,0,2*Math.PI); x.fill();}
     // 文本
     var inc = k>0?'y 随 x 增大而增大（上升）':(k<0?'y 随 x 增大而减小（下降）':'常数（水平线）');
@@ -926,7 +926,7 @@ function initHist(){
       for(var g=0;g<groups.length;g++){
         var h=groups[g]*sc;
         x.fillStyle='#2563eb'; x.globalAlpha=0.8;
-        x.fillRect(left+g*gw, baseY-h, gw-6, h);
+        x.fillRect(left+g*gw, baseY-h, gw-1, h);
         x.globalAlpha=1;
         x.fillStyle='#1f2a44'; x.font='12px sans-serif';
         x.fillText(groups[g], left+g*gw+(gw-6)/2-4, baseY-h-6);
