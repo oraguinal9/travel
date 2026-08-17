@@ -9,6 +9,7 @@ const tabs = [
   { href: '/learn', label: '学习助手' },
   { href: '/name', label: '起名助手' },
   { href: '/resume', label: '简历优化' },
+  { href: '/renovation', label: '装修预算' },
 ];
 
 export default function Nav() {
