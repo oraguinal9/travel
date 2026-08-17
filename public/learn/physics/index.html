@@ -239,7 +239,7 @@
         <p class="desc">点「开始加热」，看温度随时间怎么变。晶体到熔点会「停一下」边熔化边保温；非晶体则一直升温。</p>
         <canvas id="cvMelt" width="640" height="240"></canvas>
         <div class="ctrls">
-          <button class="btn" id="bMeltC">开始（晶体·冰）</button>
+          <button class="btn" id="bMeltC">开始（晶体·海波）</button>
           <button class="btn alt" id="bMeltN">开始（非晶体·蜡）</button>
           <button class="btn" id="bMeltR">重置</button>
         </div>
@@ -664,7 +664,7 @@
     ctxM.fillStyle='#64748b'; ctxM.font='12px sans-serif';
     ctxM.fillText('温度℃', 6, y1+4); ctxM.fillText('时间', x1-30, y0+18);
     ctxM.fillText('100', x0-28, y1+4); ctxM.fillText('0', x0-14, y0+4);
-    ctxM.fillText('熔点', x0-2, y0-(100-25)/(150-25)*(y0-y1)+2);
+    ctxM.fillText('熔点(48℃)', x0-2, y0-(48-25)/(150-25)*(y0-y1)+2);
     ctxM.strokeStyle='#2563eb'; ctxM.lineWidth=3; ctxM.beginPath();
     for(var t=0;t<=meltTime;t+=0.2){
       var temp = meltTempAt(t);
@@ -679,7 +679,7 @@
     ctxM.fillStyle='#dc2626'; ctxM.beginPath(); ctxM.arc(cpx,cpy,5,0,7); ctxM.fill();
   }
   function meltTempAt(t){
-    var melt=80;
+    var melt=48;
     if(meltType==='crystal'){
       if(t<15) return 25 + (melt-25)*(t/15);
       if(t<30) return melt;
@@ -754,9 +754,9 @@
     ctxR.strokeStyle='#94a3b8'; ctxR.setLineDash([5,4]); ctxR.beginPath(); ctxR.moveTo(mx,40); ctxR.lineTo(mx,mirrorY+40); ctxR.stroke(); ctxR.setLineDash([]);
     var ix=mx, iy=mirrorY;
     var a = reflectAngle*Math.PI/180;
-    var inX = ix - Math.cos(a)*150, inY = iy - Math.sin(a)*150;
+    var inX = ix - Math.sin(a)*150, inY = iy - Math.cos(a)*150;
     ctxR.strokeStyle='#dc2626'; ctxR.lineWidth=3; ctxR.beginPath(); ctxR.moveTo(inX,inY); ctxR.lineTo(ix,iy); ctxR.stroke();
-    var outX = ix + Math.cos(a)*150, outY = iy - Math.sin(a)*150;
+    var outX = ix + Math.sin(a)*150, outY = iy - Math.cos(a)*150;
     ctxR.strokeStyle='#16a34a'; ctxR.beginPath(); ctxR.moveTo(ix,iy); ctxR.lineTo(outX,outY); ctxR.stroke();
     ctxR.fillStyle='#dc2626'; ctxR.beginPath(); ctxR.arc(inX,inY,8,0,7); ctxR.fill();
     ctxR.fillStyle='#334155'; ctxR.font='13px sans-serif';
@@ -769,7 +769,7 @@
     var py=(e.clientY-r.top)*(cvR.height/r.height);
     var dx=px-cvR.width/2, dy=mirrorY-py;
     if(dx<=0||dy<=0) return;
-    reflectAngle = Math.max(5,Math.min(80, Math.atan2(dy,dx)*180/Math.PI));
+    reflectAngle = Math.max(5,Math.min(80, Math.atan2(dy,-dx)*180/Math.PI));
     drawReflect();
   }
   cvR.addEventListener('mousedown',function(e){dragR=true;reflectPos(e);});
@@ -844,16 +844,20 @@
     ctxRe.strokeStyle='#0ea5e9'; ctxRe.lineWidth=2; ctxRe.beginPath(); ctxRe.moveTo(0,H/2); ctxRe.lineTo(W,H/2); ctxRe.stroke();
     ctxRe.fillStyle='#334155'; ctxRe.font='12px sans-serif';
     ctxRe.fillText('空气', 14, 20); ctxRe.fillText('水', 14, H/2+20);
-    ctxRe.strokeStyle='#64748b'; ctxRe.lineWidth=3;
-    ctxRe.beginPath(); ctxRe.moveTo(W/2-60,H/2); ctxRe.lineTo(W/2-50,H-20); ctxRe.lineTo(W/2+50,H-20); ctxRe.lineTo(W/2+60,H/2); ctxRe.stroke();
-    var topX=W/2, topY=40;
-    var waterX=W/2, waterY=H/2;
-    var botX=W/2+34, botY=H-30;
-    ctxRe.strokeStyle='#92400e'; ctxRe.lineWidth=6; ctxRe.lineCap='round';
-    ctxRe.beginPath(); ctxRe.moveTo(topX,topY); ctxRe.lineTo(waterX,waterY); ctxRe.stroke();
-    ctxRe.beginPath(); ctxRe.moveTo(waterX,waterY); ctxRe.lineTo(botX,botY); ctxRe.stroke();
-    ctxRe.fillStyle='#334155'; ctxRe.font='13px sans-serif';
-    ctxRe.fillText('看！水面处像断了一截、往上翘——这就是折射', 20, H-6);
+    // 真实筷子（灰）：空气段竖直到水面，水下段向右下到水底（实际更深）
+    ctxRe.strokeStyle='#94a3b8'; ctxRe.lineWidth=6; ctxRe.lineCap='round';
+    ctxRe.beginPath(); ctxRe.moveTo(W/2,40); ctxRe.lineTo(W/2,H/2); ctxRe.stroke();
+    ctxRe.beginPath(); ctxRe.moveTo(W/2,H/2); ctxRe.lineTo(W/2+34,H-25); ctxRe.stroke();
+    // 看到的筷子（红，虚线）：水面处折断，水下段向上翘、位置比实际浅
+    ctxRe.strokeStyle='#dc2626'; ctxRe.lineWidth=6;
+    ctxRe.beginPath(); ctxRe.moveTo(W/2,40); ctxRe.lineTo(W/2,H/2); ctxRe.stroke();
+    ctxRe.setLineDash([7,5]);
+    ctxRe.beginPath(); ctxRe.moveTo(W/2,H/2); ctxRe.lineTo(W/2+14,H-60); ctxRe.stroke();
+    ctxRe.setLineDash([]);
+    ctxRe.fillStyle='#94a3b8'; ctxRe.font='12px sans-serif';
+    ctxRe.fillText('真实筷子（水下段更深）', W/2+44, H-22);
+    ctxRe.fillStyle='#dc2626'; ctxRe.font='13px sans-serif';
+    ctxRe.fillText('看起来的筷子：水面处折断、向上翘（变浅）——光的折射', 14, H-8);
   })();
 
   // ========== 实验9 池水变浅 ==========
