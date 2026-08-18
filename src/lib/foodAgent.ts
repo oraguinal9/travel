@@ -129,6 +129,7 @@ export async function suggestDayMeals(opts: {
     configuration: { baseURL: process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1' },
     temperature: 0.7,
     streamUsage: true,
+    timeout: 90000, // DeepSeek 高峰排队可达 60s+，90s 超时兜底防挂死
     modelKwargs: { thinking: { type: 'disabled' } },
   });
 

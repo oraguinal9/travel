@@ -3,7 +3,7 @@
 // 防止首页被 Next 当静态页缓存（否则前端 JS 更新后浏览器仍跑旧 bundle，导致 Server Action 版本错配、页面白屏）
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PlanForm, { type QuotaInfo } from '@/components/PlanForm';
 
@@ -13,6 +13,8 @@ export default function Home() {
   const [llmEnabled, setLlmEnabled] = useState<boolean | null>(null);
   const [quota, setQuota] = useState<QuotaInfo | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0); // AI 请求已等待秒数，用于排队提示
+  const abortRef = useRef<AbortController | null>(null);
 
   async function loadQuota() {
     try {
@@ -35,21 +37,41 @@ export default function Home() {
   async function onSubmit(req: Record<string, unknown>) {
     setLoading(true);
     setError(null);
-    const res = await fetch('/api/plan', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(req),
-    });
-    if (!res.ok) {
-      // 429 = 今日试用次数用完
-      const d = await res.json().catch(() => ({}));
-      setError(d.message || (res.status === 429 ? '今日试用次数已用完，明天再来吧。' : '生成失败，请重试。'));
+    setElapsed(0);
+    // 每秒更新等待时长，用于「排队中」提示（DeepSeek 高峰期可达 60s+）
+    const timer = setInterval(() => setElapsed((e) => e + 1), 1000);
+    // 75s 前端超时（后端 90s 兜底），避免无限转圈
+    const ac = new AbortController();
+    abortRef.current = ac;
+    const timeoutId = setTimeout(() => ac.abort(), 75000);
+    try {
+      const res = await fetch('/api/plan', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(req),
+        signal: ac.signal,
+      });
+      if (!res.ok) {
+        // 429 = 今日试用次数用完
+        const d = await res.json().catch(() => ({}));
+        setError(d.message || (res.status === 429 ? '今日试用次数已用完，明天再来吧。' : '生成失败，请重试。'));
+        setLoading(false);
+        loadQuota(); // 刷新剩余次数
+        return;
+      }
+      const { task_id } = await res.json();
+      router.push(`/plan/${task_id}`);
+    } catch (e) {
+      if (ac.signal.aborted) {
+        setError('请求超时（75 秒）：DeepSeek 高峰期排队较久，请稍后重试，或改用「规则模式」即时出结果。');
+      } else {
+        setError(e instanceof Error ? `请求失败：${e.message}` : '网络异常，请重试。');
+      }
       setLoading(false);
-      loadQuota(); // 刷新剩余次数
-      return;
+    } finally {
+      clearInterval(timer);
+      clearTimeout(timeoutId);
     }
-    const { task_id } = await res.json();
-    router.push(`/plan/${task_id}`);
   }
 
   return (
@@ -103,6 +125,27 @@ export default function Home() {
           quota={quota}
           error={error}
         />
+        {/* DeepSeek 排队提示：避免用户误以为卡死 */}
+        {loading && (
+          <div
+            style={{
+              marginTop: 14,
+              padding: '10px 14px',
+              borderRadius: 10,
+              fontSize: 13,
+              lineHeight: 1.7,
+              color: '#ad6800',
+              background: '#fff7e6',
+              border: '1px solid #ffd591',
+            }}
+          >
+            {elapsed < 15
+              ? 'AI 生成中，通常需要 10-30 秒…'
+              : elapsed < 45
+                ? 'DeepSeek 高峰期排队中，已等待 ' + elapsed + ' 秒，请再耐心等一会儿…'
+                : '排队较久（' + elapsed + ' 秒）。若继续等待可能超时，可考虑改用「规则模式」即时出结果。'}
+          </div>
+        )}
       </div>
     </main>
   );

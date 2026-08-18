@@ -109,6 +109,7 @@ export async function planTrip(
     // 非流式调用不会附带，从而避免 DeepSeek 报 "stream_options should be set along with stream = true"。
     // 这样流式响应会带回 usage，用于「本次消耗 X tokens / 约 ¥Y」统计。
     streamUsage: true,
+    timeout: 90000, // DeepSeek 高峰排队可达 60s+，90s 超时兜底防挂死
     // 关闭思考模式：deepseek-v4-flash 默认开启推理(CoT)，会产生大量思考 token、拉高费用；
     // 关掉后仍是正常指令模型，工具调用 / JSON 输出不受影响，单次规划成本显著下降。
     modelKwargs: { thinking: { type: 'disabled' } },
