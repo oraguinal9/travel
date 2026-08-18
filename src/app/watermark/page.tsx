@@ -1,52 +1,22 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-
-declare global {
-  interface Window {
-    cv?: any;
-  }
-}
+import { useRef, useState } from 'react';
 
 export default function WatermarkPage() {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const maskRef = useRef<HTMLCanvasElement | null>(null);
   const resultRef = useRef<HTMLCanvasElement | null>(null);
 
-  const [cvReady, setCvReady] = useState(false);
-  const [loadError, setLoadError] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [brush, setBrush] = useState(24);
-  const [radius, setRadius] = useState(4);
-  const [method, setMethod] = useState<'TELEA' | 'NS'>('TELEA');
+  const [sweeps, setSweeps] = useState(60);
   const [hasMask, setHasMask] = useState(false);
   const [msg, setMsg] = useState('');
   const [resultUrl, setResultUrl] = useState<string | null>(null);
 
   const drawing = useRef(false);
   const lastPt = useRef<{ x: number; y: number } | null>(null);
-
-  // 加载本地 OpenCV.js（wasm 已内嵌，自包含）
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.cv && window.cv.Mat && window.cv.inpaint) {
-      setCvReady(true);
-      return;
-    }
-    const s = document.createElement('script');
-    s.src = '/watermark/opencv.js';
-    s.async = true;
-    s.onload = () => {
-      const poll = () => {
-        if (window.cv && window.cv.Mat && window.cv.inpaint) setCvReady(true);
-        else setTimeout(poll, 120);
-      };
-      poll();
-    };
-    s.onerror = () => setLoadError(true);
-    document.body.appendChild(s);
-  }, []);
 
   const setupMask = () => {
     const img = imgRef.current;
@@ -118,7 +88,7 @@ export default function WatermarkPage() {
   };
 
   const onDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!cvReady || !imgLoaded) return;
+    if (!imgLoaded) return;
     drawing.current = true;
     lastPt.current = null;
     (e.target as Element).setPointerCapture(e.pointerId);
@@ -137,22 +107,21 @@ export default function WatermarkPage() {
 
   const clearMask = () => setupMask();
 
+  // 纯 JS 调和插值修复（Laplace 松弛 / Gauss-Seidel 迭代），无需任何外部依赖
   const runInpaint = () => {
-    if (!cvReady || !imgLoaded) {
-      setMsg('请先上传图片并等待引擎加载');
+    if (!imgLoaded) {
+      setMsg('请先上传图片');
       return;
     }
     const img = imgRef.current;
     const maskCvs = maskRef.current;
     const outCvs = resultRef.current;
     if (!img || !maskCvs || !outCvs) return;
-    const ctx = maskCvs.getContext('2d');
-    if (!ctx) return;
-    const data = ctx.getImageData(0, 0, maskCvs.width, maskCvs.height).data;
+    const mctx = maskCvs.getContext('2d');
+    if (!mctx) return;
+    const md = mctx.getImageData(0, 0, maskCvs.width, maskCvs.height).data;
     let painted = 0;
-    for (let i = 0; i < data.length; i += 4) {
-      if (data[i] > 40) painted++;
-    }
+    for (let i = 0; i < md.length; i += 4) if (md[i] > 40) painted++;
     if (painted < 20) {
       setMsg('请先用鼠标在图片上的水印区域涂抹（白色笔迹）');
       return;
@@ -160,23 +129,51 @@ export default function WatermarkPage() {
     setBusy(true);
     setMsg('正在修复中…');
     try {
-      const cv = window.cv!;
-      const src = cv.imread(img);
-      const maskRaw = cv.imread(maskCvs);
-      const mask = new cv.Mat();
-      cv.cvtColor(maskRaw, mask, cv.COLOR_RGBA2GRAY);
-      cv.threshold(mask, mask, 30, 255, cv.THRESH_BINARY);
-      const dst = new cv.Mat();
-      const flag = method === 'TELEA' ? cv.INPAINT_TELEA : cv.INPAINT_NS;
-      cv.inpaint(src, mask, dst, Number(radius), flag);
-      cv.imshow(outCvs, dst);
+      const w = maskCvs.width;
+      const h = maskCvs.height;
+      // 把原图绘制到结果画布（自然尺寸），逐像素处理
+      outCvs.width = w;
+      outCvs.height = h;
+      const octx = outCvs.getContext('2d')!;
+      octx.drawImage(img, 0,0, w, h);
+      const imgData = octx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+      const N = w * h;
+      const mask = new Uint8Array(N);
+      for (let i = 0; i < N; i++) mask[i] = md[i * 4] > 40 ? 1 : 0;
+
+      const r = new Float32Array(N);
+      const g = new Float32Array(N);
+      const b = new Float32Array(N);
+      for (let i = 0; i < N; i++) {
+        r[i] = data[i * 4];
+        g[i] = data[i * 4 + 1];
+        b[i] = data[i * 4 + 2];
+      }
+      const iters = Math.max(20, Math.min(200, sweeps));
+      for (let s = 0; s < iters; s++) {
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const idx = y * w + x;
+            if (!mask[idx]) continue;
+            let sr = 0, sg = 0, sb = 0, n = 0;
+            if (y > 0) { const j = idx - w; sr += r[j]; sg += g[j]; sb += b[j]; n++; }
+            if (y < h - 1) { const j = idx + w; sr += r[j]; sg += g[j]; sb += b[j]; n++; }
+            if (x > 0) { const j = idx - 1; sr += r[j]; sg += g[j]; sb += b[j]; n++; }
+            if (x < w - 1) { const j = idx + 1; sr += r[j]; sg += g[j]; sb += b[j]; n++; }
+            if (n) { r[idx] = sr / n; g[idx] = sg / n; b[idx] = sb / n; }
+          }
+        }
+      }
+      for (let i = 0; i < N; i++) {
+        data[i * 4] = r[i];
+        data[i * 4 + 1] = g[i];
+        data[i * 4 + 2] = b[i];
+      }
+      octx.putImageData(imgData, 0, 0);
       const url = outCvs.toDataURL('image/png');
       setResultUrl(url);
       setMsg('修复完成，可下载保存');
-      src.delete();
-      maskRaw.delete();
-      mask.delete();
-      dst.delete();
     } catch (err: any) {
       setMsg('处理失败：' + (err?.message || err));
     } finally {
@@ -188,22 +185,10 @@ export default function WatermarkPage() {
     <main style={{ maxWidth: 1100, margin: '0 auto', padding: 16, color: '#222' }}>
       <h1 style={{ fontSize: 24, marginBottom: 4 }}>图片去水印</h1>
       <p style={{ color: '#666', fontSize: 14, marginTop: 0, marginBottom: 16 }}>
-        上传图片 → 用鼠标在<strong>水印区域</strong>涂抹 → 一键修复并下载干净图。全程在浏览器本地处理，不上传服务器、零费用、不依赖任何平台。
+        上传图片 → 用鼠标在<strong>水印区域</strong>涂抹 → 一键修复并下载干净图。全程在浏览器本地处理，不上传服务器、零费用、不依赖任何平台，打开即用。
       </p>
 
-      {!cvReady && !loadError && (
-        <div style={{ padding: '20px', background: '#eef4fb', borderRadius: 10, color: '#185fa5', fontSize: 14 }}>
-          正在加载去水印引擎（首次约 13MB，稍候几秒）…
-        </div>
-      )}
-      {loadError && (
-        <div style={{ padding: '16px', background: '#fde8e8', borderRadius: 10, color: '#c0392b', fontSize: 14 }}>
-          OpenCV 引擎加载失败，请刷新页面重试。
-        </div>
-      )}
-
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 16 }}>
-        {/* 左：上传 + 操作 */}
         <section style={{ flex: '1 1 320px', minWidth: 300 }}>
           <label
             style={{
@@ -232,29 +217,22 @@ export default function WatermarkPage() {
               <input type="range" min={6} max={80} value={brush} onChange={(e) => setBrush(Number(e.target.value))} style={{ width: '100%' }} />
             </div>
             <div>
-              <div style={{ fontSize: 13, color: '#555', marginBottom: 4 }}>修复强度（半径）：{radius}</div>
-              <input type="range" min={1} max={12} value={radius} onChange={(e) => setRadius(Number(e.target.value))} style={{ width: '100%' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: 13, color: '#555', marginBottom: 4 }}>算法</div>
-              <select value={method} onChange={(e) => setMethod(e.target.value as 'TELEA' | 'NS')} style={{ width: '100%', padding: 8, borderRadius: 8, border: '1px solid #ccc' }}>
-                <option value="TELEA">TELEA（快，适合文字/小标记）</option>
-                <option value="NS">NS（平滑，适合大块区域）</option>
-              </select>
+              <div style={{ fontSize: 13, color: '#555', marginBottom: 4 }}>修复强度（迭代次数）：{sweeps}</div>
+              <input type="range" min={20} max={200} value={sweeps} onChange={(e) => setSweeps(Number(e.target.value))} style={{ width: '100%' }} />
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button
                 onClick={runInpaint}
-                disabled={!cvReady || !imgLoaded || busy}
+                disabled={!imgLoaded || busy}
                 style={{
                   flex: 1,
                   padding: '10px 14px',
                   borderRadius: 8,
                   border: 'none',
-                  background: cvReady && imgLoaded && !busy ? '#185fa5' : '#b9c7d6',
+                  background: imgLoaded && !busy ? '#185fa5' : '#b9c7d6',
                   color: '#fff',
                   fontSize: 15,
-                  cursor: cvReady && imgLoaded && !busy ? 'pointer' : 'not-allowed',
+                  cursor: imgLoaded && !busy ? 'pointer' : 'not-allowed',
                 }}
               >
                 {busy ? '修复中…' : '去水印'}
@@ -271,11 +249,10 @@ export default function WatermarkPage() {
           </div>
 
           <p style={{ fontSize: 12, color: '#999', marginTop: 12, lineHeight: 1.6 }}>
-            适用：边角文字、半透明 logo、纯色背景上的标记等简单水印效果最好；复杂/大面积水印还原有限，请酌情使用。仅用于你<strong>自有或已授权</strong>的内容。
+            适用：半透明 logo、边角文字、纯色/简单背景上的水印效果最好；复杂/大面积水印会被平滑填充（略有模糊），请酌情使用。仅用于你<strong>自有或已授权</strong>的内容。
           </p>
         </section>
 
-        {/* 右：画布 + 结果 */}
         <section style={{ flex: '2 1 460px', minWidth: 320 }}>
           <div
             style={{ position: 'relative', border: '1px solid #eee', borderRadius: 10, overflow: 'hidden', background: '#fafafa' }}
@@ -306,7 +283,7 @@ export default function WatermarkPage() {
                 width: '100%',
                 height: '100%',
                 display: imgLoaded ? 'block' : 'none',
-                cursor: cvReady ? 'crosshair' : 'default',
+                cursor: 'crosshair',
                 touchAction: 'none',
               }}
             />
