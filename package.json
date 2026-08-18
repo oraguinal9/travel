@@ -15,7 +15,8 @@
     "@langchain/openai": "^0.2.0",
     "@langchain/langgraph": "^0.0.31",
     "@langchain/core": "^0.2.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "mp4-muxer": "^5.1.5"
   },
   "devDependencies": {
     "typescript": "^5.5.4",

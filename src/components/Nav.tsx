@@ -11,6 +11,7 @@ const tabs = [
   { href: '/resume', label: '简历优化' },
   { href: '/renovation', label: '装修预算' },
   { href: '/watermark', label: '图片去水印' },
+  { href: '/subtitle', label: '视频去字幕' },
 ];
 
 export default function Nav() {
