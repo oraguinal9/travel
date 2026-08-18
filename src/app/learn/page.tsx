@@ -28,6 +28,13 @@ const subjects = [
     desc: '苏科版：核心知识点互动讲解、易错点梳理、随堂例题与闯关练习，边做边巩固。',
     tag: '互动练习 · 易错点',
   },
+  {
+    href: '/learn/mistakes',
+    emoji: '🔍',
+    name: '错题本分析器',
+    desc: '粘贴错题自动归类：科目 × 错因 × 薄弱知识点排名 + 间隔复习计划（第 1/2/4/7/15/30 天），AI 模式可生成变式练习卷，联动知识库复习。',
+    tag: '分析 · 复习计划',
+  },
 ];
 
 export default function LearnPage(): ReactNode {
