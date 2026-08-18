@@ -26,8 +26,8 @@ export default function WatermarkPage() {
     cvs.height = img.naturalHeight;
     const ctx = cvs.getContext('2d');
     if (ctx) {
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, cvs.width, cvs.height);
+      // 透明画布：露出底图，仅涂抹处才上色，避免整块黑色盖住图片
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
     }
     setHasMask(false);
     setResultUrl(null);
@@ -68,8 +68,9 @@ export default function WatermarkPage() {
     const rect = cvs.getBoundingClientRect();
     const scale = cvs.width / rect.width;
     const r = brush * scale;
-    ctx.strokeStyle = '#fff';
-    ctx.fillStyle = '#fff';
+    // 半透明红色高亮：既能看清原图，又能看清涂抹区域（算法按红色通道识别）
+    ctx.strokeStyle = 'rgba(255, 64, 64, 0.5)';
+    ctx.fillStyle = 'rgba(255, 64, 64, 0.5)';
     ctx.lineWidth = r;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
