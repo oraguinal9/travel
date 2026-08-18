@@ -35,6 +35,13 @@ const subjects = [
     desc: '粘贴错题自动归类：科目 × 错因 × 薄弱知识点排名 + 间隔复习计划（第 1/2/4/7/15/30 天），AI 模式可生成变式练习卷，联动知识库复习。',
     tag: '分析 · 复习计划',
   },
+  {
+    href: '/learn/memorize',
+    emoji: '🧠',
+    name: '背诵计划助手',
+    desc: '粘贴要背的内容 → 按艾宾浩斯记忆曲线自动排期（1/2/4/7/15/30 天复习）→ 打卡日历 + 进度看板，本地保存可导出。',
+    tag: '艾宾浩斯 · 打卡',
+  },
 ];
 
 export default function LearnPage(): ReactNode {
