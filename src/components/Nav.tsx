@@ -12,6 +12,7 @@ const tabs = [
   { href: '/renovation', label: '装修预算' },
   { href: '/watermark', label: '图片去水印' },
   { href: '/subtitle', label: '视频去字幕' },
+  { href: '/image-tools', label: '图片工具箱' },
 ];
 
 export default function Nav() {
