@@ -1,3 +1,5 @@
+> ▶ 在线体验：https://travel.zbjh.top
+
 # 旅行规划 Agent（MVP 骨架）
 
 说一句话，AI 帮你排好带地图和预算的旅行行程。可上架 aizaow.com（分类：效率工具）。
